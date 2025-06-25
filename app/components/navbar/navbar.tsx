@@ -2,9 +2,9 @@ import { BookOpenText } from "lucide-react";
 import styles from "./navbar.module.css";
 import { Link } from "react-router";
 import type { userType } from "~/types/accountType";
-import DropDownAccount from "./components/dropDownAccount";
+import DropDownAccount from "./components/DropDownAccount";
 import { useEffect, useState } from "react";
-import Login from "~/scripts/login";
+import Login from "~/auth/login";
 
 type incomingProps = {
   user: userType | null;

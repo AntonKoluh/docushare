@@ -1,6 +1,6 @@
 import clsx from "clsx";
-import GoogleLogin from "~/scripts/login";
-import useLogin from "~/scripts/login";
+import GoogleLogin from "~/auth/login";
+import useLogin from "~/auth/login";
 
 export default function GetStartedBtn() {
   return (
