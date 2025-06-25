@@ -9,6 +9,7 @@ import {
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import type { Route } from "./+types/root";
 import "./app.css";
+import { Toaster } from "~/components/ui/sonner";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -33,6 +34,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
+        <Toaster
+          position="top-center"
+          duration={1500}
+          toastOptions={{
+            unstyled: true,
+            classNames: {
+              toast:
+                "bg-gray-400 text-black text-xl px-4 py-3 rounded-md shadow-lg",
+              description: "text-gray-300 text-xs",
+              actionButton: "bg-white text-black",
+            },
+          }}
+        />
         <GoogleOAuthProvider clientId="41461536841-9gb417n1meov5fvcih5hqiq0qeqjuatk.apps.googleusercontent.com">
           {children}
           <ScrollRestoration />

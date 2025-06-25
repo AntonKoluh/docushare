@@ -34,7 +34,7 @@ export default function useGetData() {
       }
       if (res.status === 200) {
         const data = await res.json();
-        return { status: true, data };
+        return { success: true, data };
       } else {
         useLogout();
         navigate("/");

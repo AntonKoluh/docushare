@@ -39,7 +39,7 @@ export default function EditorNavBar({ filename }: incomingProps) {
               <DropDownAI />
             </li>
             <li className="bg-black text-xl px-2 rounded-md ml-auto text-white hover:bg-gray-400 cursor-pointer hover:text-black">
-              <Link to="/docs">Back</Link>
+              <Link to="/">Back</Link>
             </li>
           </ul>
         </div>

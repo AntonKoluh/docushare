@@ -1,14 +1,13 @@
 import useGetData from "~/hooks/useGetData";
 import GetStartedBtn from "../common/btnGetStarted";
+import Login from "~/scripts/login";
+import type { userType } from "~/types/accountType";
 
-export default function Welcome() {
-  const getData = useGetData();
+type incomingProps = {
+  handleCheckLogin: () => void;
+};
 
-  const handleCheckLogin = async () => {
-    const result = await getData("test/");
-    console.log(result);
-  };
-
+export default function Welcome({ handleCheckLogin }: incomingProps) {
   return (
     <div className="w-fit h-full mx-auto max-w-7xl flex flex-col justify-start items-center p-10">
       <p className="mt-15">
@@ -28,9 +27,11 @@ export default function Welcome() {
       </p>
       <h3 className="mt-20 text-center w-full">Get Started Now:</h3>
       <div className="mt-5 text-left w-full flex flex-col gap-5 justify-center items-center">
-        <GetStartedBtn />
+        <Login text="Sign in with google" />
         {/* <button className={clsx("btn", "secondary")}>Sign up</button> */}
-        <button onClick={handleCheckLogin}>Check login</button>
+        <button onClick={handleCheckLogin} className="text-gray-300">
+          Check login
+        </button>
       </div>
     </div>
   );
