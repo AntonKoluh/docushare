@@ -1,5 +1,7 @@
-import NewFile from "./newDoc";
-import SearchList from "./search";
+import { Link } from "react-router";
+import NewFile from "./components/newDoc";
+import SearchList from "./components/search";
+import DropDownDocsList from "./components/DropDownDocsList";
 
 const data = [
   {
@@ -33,7 +35,9 @@ export default function FileList() {
   return (
     <div className="max-w-7xl mx-auto w-full h-full pt-10">
       <div className="flex flex-row gap-50 justify-start items-center">
-        <NewFile />
+        <Link to={"/edit/"}>
+          <NewFile />
+        </Link>
         {/* <SearchList /> */}
       </div>
       <div className="flex flex-col pt-20 w-full">
@@ -48,21 +52,16 @@ export default function FileList() {
           </p>
         </div>
         {data.map((obj) => (
-          <div
-            className=" cursor-pointer flex flex-row justify-center items-center w-full border-b-1 h-16 border-b-gray-400 px-2 hover:bg-gray-600"
-            key={obj.id}
-          >
-            <p className="flex-6 w-full">{obj.name}</p>
-            <p className="flex-2 w-full text-center">{obj.owner}</p>
-            <p className="flex-2 w-full text-center">12.12.2024</p>
-            <p className="flex-1 flex w-full justify-center items-center">
-              <span className="flex flex-col w-10 h-10 justify-center items-center gap-1 hover:bg-gray-800 rounded-full">
-                <span className="rounded-full bg-gray-200 w-1 h-1"></span>
-                <span className="rounded-full bg-gray-200 w-1 h-1"></span>
-                <span className="rounded-full bg-gray-200 w-1 h-1"></span>
-              </span>
-            </p>
-          </div>
+          <Link to={"/edit/" + obj.id} key={obj.id}>
+            <div className=" cursor-pointer flex flex-row justify-center items-center w-full border-b-1 h-16 border-b-gray-400 px-2 hover:bg-gray-600">
+              <p className="flex-6 w-full">{obj.name}</p>
+              <p className="flex-2 w-full text-center">{obj.owner}</p>
+              <p className="flex-2 w-full text-center">12.12.2024</p>
+              <p className="flex-1 flex w-full justify-center items-center">
+                <DropDownDocsList name={obj.name} />
+              </p>
+            </div>
+          </Link>
         ))}
       </div>
     </div>
