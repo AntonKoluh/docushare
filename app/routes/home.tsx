@@ -54,7 +54,7 @@ export default function Home() {
     );
 
   return (
-    <div className="flex flex-col w-full h-full bg-[url(./coverbg.svg)] bg-center bg-no-repeat bg-cover">
+    <div className="flex flex-col w-full h-full bg-[url(/coverbg.svg)] bg-center bg-no-repeat bg-cover">
       <Navbar user={user} />
       {user ? <FileList /> : <Welcome handleCheckLogin={handleCheckLogin} />}
     </div>
