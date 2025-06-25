@@ -1,6 +1,6 @@
 import useGetData from "~/hooks/useGetData";
 import GetStartedBtn from "../common/btnGetStarted";
-import Login from "~/scripts/login";
+import Login from "~/auth/login";
 import type { userType } from "~/types/accountType";
 
 type incomingProps = {

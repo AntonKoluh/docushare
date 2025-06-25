@@ -4,6 +4,8 @@ import requests
 from django.contrib.auth.models import User
 import logging
 from dotenv import load_dotenv
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
 
 load_dotenv
 
@@ -16,34 +18,32 @@ class GoogleAuthService:
         Verify Google access token and return user info
         """
         try:
-            # Use Google's tokeninfo endpoint to verify access token
-            response = requests.get(
-                'https://www.googleapis.com/oauth2/v1/tokeninfo',
-                params={'access_token': access_token}
-            )
+            token_url = "https://oauth2.googleapis.com/token"
+
+            payload = {
+                "code": access_token,
+                "client_id": os.getenv("GOOGLE_ID"),
+                "client_secret": os.getenv("GOOGLE_SECRET"),
+                "redirect_uri": "http://localhost:5173/auth/callback",
+                "grant_type": "authorization_code",
+            }
+            response = requests.post(token_url, data=payload)
             
             if response.status_code != 200:
                 logger.error(f"Token verification failed: {response.text}")
                 return None
             
             token_info = response.json()
-            
+            user_info = id_token.verify_oauth2_token(
+            token_info['id_token'],
+            google_requests.Request(),
+            os.getenv("GOOGLE_ID")
+            )
             # Verify the token belongs to our app
-            if token_info.get('audience') != os.getenv('GOOGLE_ID'):
+            if user_info.get('azp') != os.getenv('GOOGLE_ID'):
                 logger.error("Token audience doesn't match client ID")
                 return None
             
-            # Get user info from Google People API
-            user_info_response = requests.get(
-                'https://www.googleapis.com/oauth2/v2/userinfo',
-                params={'access_token': access_token}
-            )
-            
-            if user_info_response.status_code != 200:
-                logger.error(f"Failed to get user info: {user_info_response.text}")
-                return None
-            
-            user_info = user_info_response.json()
             
             return {
                 'email': user_info.get('email'),
@@ -72,16 +72,16 @@ class GoogleAuthService:
                 email=user_data['email'],
                 defaults={
                     'username': user_data['email'],
-                    'first_name': user_data['first_name'],
-                    'last_name': user_data['last_name'],
+                    'first_name': user_data['given_name'],
+                    'last_name': user_data['family_name'],
                     'is_active': True,
                 }
             )
             
             # Update user info if user already exists
             if not created:
-                user.first_name = user_data['first_name']
-                user.last_name = user_data['last_name']
+                user.first_name = user_data['given_name']
+                user.last_name = user_data['family_name']
                 user.save()
             
             return user
