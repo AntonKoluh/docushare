@@ -2,20 +2,21 @@ import { Logout } from "./Logout";
 import { useNavigate } from "react-router";
 import { useCallback } from "react";
 
-export default function useGetData() {
+export default function usePostData() {
   const navigate = useNavigate();
   const baseUrl = import.meta.env.VITE_BACKEND_URL;
 
   const authFetch = useCallback(
-    async (endpoint: string) => {
+    async (endpoint: string, data: any) => {
       const access_token = localStorage.getItem("access");
       const refresh_token = localStorage.getItem("refresh");
       const res = await fetch(baseUrl + "/api/" + endpoint, {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + access_token,
         },
+        body: JSON.stringify(data),
       });
       if (res.status === 401 && refresh_token) {
         const refresh = await fetch(baseUrl + "/api/token/refresh/", {
@@ -29,7 +30,7 @@ export default function useGetData() {
         if (refresh.status === 200) {
           localStorage.setItem("access", refreshData.access);
           localStorage.setItem("refresh", refreshData.refresh);
-          return authFetch(endpoint);
+          return authFetch(endpoint, data);
         }
       }
       if (res.status === 200) {

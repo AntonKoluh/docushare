@@ -5,15 +5,22 @@ import type { userType } from "~/types/accountType";
 import DropDownAccount from "./components/DropDownAccount";
 import { useEffect, useState } from "react";
 import Login from "~/auth/login";
+import useGetData from "~/hooks/useGetData";
 
 type incomingProps = {
   user: userType | null;
 };
 
 export default function Navbar({ user }: incomingProps) {
+  const getData = useGetData();
   const displayName = user
     ? user.first_name.slice(0, 1) + user.last_name.slice(0, 1)
     : null;
+
+  const handleCheckLogin = async () => {
+    const result = await getData("docs/");
+    console.log("result: " + JSON.stringify(result));
+  };
   return (
     <div className="bg-[rgba(0,0,0,0.5)] w-full">
       <nav className="flex flex-row justify-between items-center h-24 w-full max-w-7xl mx-auto">
@@ -25,6 +32,11 @@ export default function Navbar({ user }: incomingProps) {
             <BookOpenText className="size-10 h-full" />
             Docs
           </Link>
+        </div>
+        <div>
+          {/* <p className="text-2xl text-red-600" onClick={handleCheckLogin}>
+            Test
+          </p> */}
         </div>
         <div>
           {displayName ? (

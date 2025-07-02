@@ -36,7 +36,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         <Toaster
           position="top-center"
-          duration={1500}
+          duration={3000}
           toastOptions={{
             unstyled: true,
             classNames: {

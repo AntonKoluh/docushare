@@ -20,7 +20,7 @@ export default function AuthCallback() {
       localStorage.setItem("access", data.access_token);
       localStorage.setItem("refresh", data.refresh_token);
       localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("showToast", "login");
+      localStorage.setItem("showToast", "Logged in successfully");
 
       navigate("/"); // or home/dashboard
     };

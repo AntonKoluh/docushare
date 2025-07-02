@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import type { userType } from "~/types/accountType";
 import useGetData from "~/hooks/useGetData";
 import { useNavigate } from "react-router";
-import FileList from "~/components/DocsList/DocsList";
 import { toast } from "sonner";
+import DocList from "~/components/DocsList/DocList";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -23,7 +23,6 @@ export default function Home() {
 
   const handleCheckLogin = async () => {
     const result = await getData("test/");
-    console.log("result: " + result.success);
   };
 
   useEffect(() => {
@@ -37,12 +36,9 @@ export default function Home() {
       setLoading(false);
     }
     const storageFlag = localStorage.getItem("showToast");
-    if (storageFlag === "login") {
-      toast("Logged in successfully");
-      localStorage.removeItem("showToast");
-    } else if (storageFlag === "logout") {
-      toast("Logged out successfully");
-      localStorage.removeItem("showToast");
+    if (storageFlag) {
+      toast(storageFlag);
+      localStorage.setItem("showToast", "");
     }
   }, []);
 
@@ -56,7 +52,7 @@ export default function Home() {
   return (
     <div className="flex flex-col w-full h-full bg-[url(/coverbg.svg)] bg-center bg-no-repeat bg-cover">
       <Navbar user={user} />
-      {user ? <FileList /> : <Welcome handleCheckLogin={handleCheckLogin} />}
+      {user ? <DocList /> : <Welcome />}
     </div>
   );
 }

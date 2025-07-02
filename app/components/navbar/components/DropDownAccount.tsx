@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,20 +7,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { useLogout } from "~/hooks/useLogout";
+import { Logout } from "~/hooks/Logout";
 
 type incomingProps = {
   displayName: string;
 };
 
 export default function DropDownAccount({ displayName }: incomingProps) {
+  const navigate = useNavigate();
   function onLogout() {
-    useLogout();
+    Logout();
+    navigate(0);
   }
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="bg-purple-800 p-3 rounded-full cursor-pointer text-2xl text-gray-200 font-bold">
+      <DropdownMenuTrigger className="bg-purple-800 p-3 rounded-full cursor-pointer text-xl text-gray-200 font-bold">
         {displayName}
       </DropdownMenuTrigger>
       <DropdownMenuContent sideOffset={25}>

@@ -1,13 +1,6 @@
-import useGetData from "~/hooks/useGetData";
-import GetStartedBtn from "../common/btnGetStarted";
 import Login from "~/auth/login";
-import type { userType } from "~/types/accountType";
 
-type incomingProps = {
-  handleCheckLogin: () => void;
-};
-
-export default function Welcome({ handleCheckLogin }: incomingProps) {
+export default function Welcome() {
   return (
     <div className="w-fit h-full mx-auto max-w-7xl flex flex-col justify-start items-center p-10">
       <p className="mt-15">
@@ -29,9 +22,7 @@ export default function Welcome({ handleCheckLogin }: incomingProps) {
       <div className="mt-5 text-left w-full flex flex-col gap-5 justify-center items-center">
         <Login text="Sign in with google" />
         {/* <button className={clsx("btn", "secondary")}>Sign up</button> */}
-        <button onClick={handleCheckLogin} className="text-gray-300">
-          Check login
-        </button>
+        <button className="text-gray-300">Check login</button>
       </div>
     </div>
   );
