@@ -10,11 +10,12 @@ export default function useGetData() {
     async (endpoint: string) => {
       const access_token = localStorage.getItem("access");
       const refresh_token = localStorage.getItem("refresh");
+      const hasLogged = !access_token || !refresh_token ? false : true;
       const res = await fetch(baseUrl + "/api/" + endpoint, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + access_token,
+          ...(hasLogged ? { Authorization: "Bearer " + access_token } : {}),
         },
       });
       if (res.status === 401 && refresh_token) {

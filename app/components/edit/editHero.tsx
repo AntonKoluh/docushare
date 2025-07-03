@@ -1,4 +1,11 @@
-import React, { useRef, useState, useCallback, useEffect } from "react";
+import React, {
+  useRef,
+  useState,
+  useCallback,
+  useEffect,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import {
   Bold,
   Italic,
@@ -16,10 +23,18 @@ import { useParams } from "react-router";
 import { Button } from "../ui/button";
 
 type incomingProps = {
-  content: string | undefined;
+  doc: dataType;
+  setDoc: Dispatch<SetStateAction<dataType>>;
+  updateData: updateDataType;
+  setUpdateData: Dispatch<SetStateAction<updateDataType>>;
 };
 
-export default function SimpleRichTextEditor({ content }: incomingProps) {
+export default function SimpleRichTextEditor({
+  doc,
+  setDoc,
+  updateData,
+  setUpdateData,
+}: incomingProps) {
   const { id } = useParams<{ id: string }>();
   const editorRef = useRef<HTMLDivElement>(null);
   const [activeFormats, setActiveFormats] = useState({
@@ -53,10 +68,10 @@ export default function SimpleRichTextEditor({ content }: incomingProps) {
   };
 
   useEffect(() => {
-    if (content && editorRef.current) {
-      editorRef.current.innerHTML = content;
+    if (doc && editorRef.current) {
+      editorRef.current.innerHTML = doc.content || "";
     }
-  }, [content]);
+  }, []);
 
   const handleKeyUp = () => {
     checkFormatting();
@@ -68,7 +83,14 @@ export default function SimpleRichTextEditor({ content }: incomingProps) {
 
   const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
     // Optional: You can track content changes here
-    console.log("Content changed:", e.currentTarget.innerHTML);
+    if (doc) {
+      const newData = {
+        ...updateData,
+        content: e.currentTarget.innerHTML,
+        flag: true,
+      };
+      setUpdateData(newData);
+    }
   };
 
   const getContent = () => {
@@ -291,14 +313,14 @@ export default function SimpleRichTextEditor({ content }: incomingProps) {
             Summarize Text
           </Button>
         </div>
-
+        {/* disabled=} */}
         {/* Editor */}
         <div
           ref={editorRef}
-          contentEditable
+          contentEditable={doc.access === 0 ? false : true}
           className="min-h-[300px] p-4 outline-none"
           defaultValue={id ? "Loading..." : ""}
-          style={{ lineHeight: "1.6" }}
+          style={{ lineHeight: "1.6", direction: "ltr" }}
           onKeyUp={handleKeyUp}
           onMouseUp={handleMouseUp}
           onInput={handleInput}

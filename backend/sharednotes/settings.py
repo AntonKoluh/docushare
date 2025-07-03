@@ -37,6 +37,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -47,7 +48,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'sharednotes.API.apps.ApiConfig',
     'Docs',
+    'liveShare',
 ]
 
 MIDDLEWARE = [
@@ -91,9 +94,13 @@ TEMPLATES = [
 WSGI_APPLICATION = "sharednotes.wsgi.application"
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',  # or your default
+    ],
+    'UNAUTHENTICATED_USER': None  # ← prevents token validation errors
 }
 
 SIMPLE_JWT = {
@@ -112,8 +119,12 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
-    }
+    },
 }
+
+MONGO_DATABASE_NAME = 'shared_notes'
+MONGO_HOST = 'localhost'
+MONGO_PORT = 27017
 
 
 # Password validation
@@ -156,3 +167,13 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+ASGI_APPLICATION = "sharednotes.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(os.getenv('REDIS_IP'), 6379)],
+        },
+    },
+}

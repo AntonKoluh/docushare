@@ -1,20 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Route } from "./+types/editDoc";
 import SimpleRichTextEditor from "~/components/edit/editHero";
 import EditorNavBar from "~/components/navbar/EditorNavBar";
-import { useParams } from "react-router";
-
-const data = {
-  id: 1,
-  filename: "my dummy file",
-  content: "This is a dummy file to insert.",
-};
-
-type dataType = {
-  id: number;
-  filename: string;
-  content: string;
-};
+import { useNavigate, useParams } from "react-router";
+import useGetData from "~/hooks/useGetData";
+import { toast } from "sonner";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -23,20 +13,125 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
+const emptyDoc = {
+  id: null,
+  title: "New Document",
+  content: "",
+  access: 0,
+};
+
+function generateShortId(): string {
+  return Math.random().toString(36).substring(2, 7); // base36 = [0-9a-z]
+}
+
 export default function FileListRoute() {
-  const [doc, setDoc] = useState<dataType | null>(null);
   const { id } = useParams<{ id: string | undefined }>();
+  const [socketStatus, setSocketStatus] = useState(0);
+  const [isLoading, setIsLoading] = useState(id ? true : false);
+  const [doc, setDoc] = useState<dataType>(emptyDoc);
+  const [updateData, setUpdateData] = useState<updateDataType>({
+    ...emptyDoc,
+    flag: false,
+  });
+  const updateDataRef = useRef(updateData);
+  const stocketStatusRef = useRef(socketStatus);
+  const getData = useGetData();
+  const navigate = useNavigate();
+
   useEffect(() => {
-    setDoc(null);
-    // real data retrieval goes in here
+    updateDataRef.current = updateData;
+  }, [updateData]);
+
+  useEffect(() => {
+    stocketStatusRef.current = socketStatus;
+  }, [socketStatus]);
+
+  useEffect(() => {
+    if (doc.access != -1) {
+      const liveSocket = new WebSocket(
+        "ws://" + import.meta.env.VITE_WS_URL + "/ws/doc/1/"
+      );
+      liveSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        console.log(data);
+      };
+      liveSocket.onopen = () => {
+        const getUser = JSON.parse(localStorage.getItem("user") || "{}");
+        const username = getUser.email
+          ? getUser.email
+          : "Guest-" + generateShortId();
+        setSocketStatus(1);
+        liveSocket.send(
+          JSON.stringify({
+            type: "init",
+            username: username,
+          })
+        );
+      };
+      liveSocket.onerror = () => {
+        setSocketStatus(2);
+      };
+      if (doc.access === 1) {
+        const updateWebSocket = setInterval(() => {
+          if (updateDataRef.current.flag && stocketStatusRef.current === 1) {
+            console.log("Ayooo");
+            liveSocket.send(
+              JSON.stringify({
+                type: "msg",
+                id: id,
+                name: updateDataRef.current.title,
+                content: updateDataRef.current.content,
+              })
+            );
+
+            // Update the actual state
+            setUpdateData((prev) => ({ ...prev, flag: false }));
+          }
+        }, 2000);
+
+        return () => clearInterval(updateWebSocket);
+      }
+    }
+  }, [doc.access]);
+
+  useEffect(() => {
     if (id) {
-      setDoc(data);
+      async function getContent() {
+        const result = await getData("docs/" + id);
+        if (result.data.access === -1) {
+          localStorage.setItem(
+            "showToast",
+            "You do not have access to this Doc"
+          );
+          navigate("/");
+        }
+        setDoc(result.data);
+        setIsLoading(false);
+      }
+      getContent();
     }
   }, [id]);
   return (
-    <div className="flex flex-col w-full h-full bg-gray-200 bg-center bg-no-repeat bg-cover">
-      <EditorNavBar filename={doc?.filename} />
-      <SimpleRichTextEditor content={doc?.content} />
+    <div className="flex flex-col w-full h-full bg-gray-200 gap-2">
+      {isLoading ? (
+        <h1>Loading.... </h1>
+      ) : (
+        <>
+          <EditorNavBar
+            doc={doc}
+            socketStatus={socketStatus}
+            setDoc={setDoc}
+            updateData={updateData}
+            setUpdateData={setUpdateData}
+          />
+          <SimpleRichTextEditor
+            doc={doc}
+            setDoc={setDoc}
+            updateData={updateData}
+            setUpdateData={setUpdateData}
+          />
+        </>
+      )}
     </div>
   );
 }

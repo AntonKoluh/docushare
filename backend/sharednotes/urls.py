@@ -18,7 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from sharednotes.API.views import my_protected_view, get_doc_list, update_colab, delete_doc, get_colab_list, delete_colab, update_colab_access
+from sharednotes.API.views import my_protected_view, get_doc_list, update_colab, delete_doc, get_colab_list, delete_colab, update_colab_access, get_doc
 from .views.auth import google_login
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -35,6 +35,7 @@ urlpatterns = [
 
     path('api/docs/', get_doc_list),
     path('api/docs/delete/', delete_doc),
+    path('api/docs/<int:id>/', get_doc),
     path('api/colab/update_colab/', update_colab),
     path('api/colab/<int:id>/', get_colab_list),
     path('api/colab/delete/', delete_colab),

@@ -5,6 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from Docs.models import *
 from Docs.serializer import DocEntrySerializer
 from Docs.serializer import CollaboratorsSerializer
+from liveShare.models import MongoNote
+from rest_framework.permissions import AllowAny
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -80,5 +82,32 @@ def update_colab_access(request):
     response = {"success": True, "msg": f"{user_requiring_access.username} is now {"able" if success == 1 else "unable"} to edit {doc_entry.name}", "auth": success}
     return Response(response)
 
-    
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_doc(request, id):
+    """
+    Gets initial post as backup incase WS fail and for faster loading.
+    + access verification
+    access: -1 - denied, 0 - readonly, 1 - read/write
+    """
+    doc_entry = DocEntry.objects.filter(id=id).first()
+    if not doc_entry:
+        return Response(status=404)
+    try:
+        accessing_user = request.user.username
+    except AttributeError:
+        accessing_user = "Guest"
+    collabCheck = Collaborators.objects.filter(doc_entry=doc_entry, collaborator__username = accessing_user).first()
+    if doc_entry.owner.username == accessing_user:
+        access = 1
+    elif collabCheck:
+        access = collabCheck.auth
+    else:
+        access = 0 if doc_entry.public_access else -1
+
+    print("acceess:: " + str(access))
+    doc = MongoNote.objects.filter(doc_id=id).first()
+    if access != -1:
+        return Response({"id": id, "title": doc_entry.name, "content": doc.content, "access": access})
+    return Response({"access": access})
     
