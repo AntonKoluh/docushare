@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
-export default function DropDownSocial() {
+export default function DropDownSocial({ setShareOpen }: any) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>Social</DropdownMenuTrigger>
@@ -18,7 +18,10 @@ export default function DropDownSocial() {
           Social
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-xl">
+        <DropdownMenuItem
+          className="text-xl"
+          onSelect={() => setShareOpen(true)}
+        >
           <Eye />
           Manage Access
         </DropdownMenuItem>

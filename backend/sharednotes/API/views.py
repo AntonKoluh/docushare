@@ -105,7 +105,6 @@ def get_doc(request, id):
     else:
         access = 0 if doc_entry.public_access else -1
 
-    print("acceess:: " + str(access))
     doc = MongoNote.objects.filter(doc_id=id).first()
     if access != -1:
         return Response({"id": id, "title": doc_entry.name, "content": doc.content, "access": access})

@@ -33,6 +33,7 @@ export default function FileListRoute() {
     ...emptyDoc,
     flag: false,
   });
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const updateDataRef = useRef(updateData);
   const stocketStatusRef = useRef(socketStatus);
   const getData = useGetData();
@@ -53,7 +54,12 @@ export default function FileListRoute() {
       );
       liveSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
-        console.log(data);
+        if (data.type === "user.update") {
+          setOnlineUsers(data.users);
+        }
+        if (data.type === "msg") {
+          setDoc({ ...doc, title: data.name, content: data.content });
+        }
       };
       liveSocket.onopen = () => {
         const getUser = JSON.parse(localStorage.getItem("user") || "{}");
@@ -74,7 +80,6 @@ export default function FileListRoute() {
       if (doc.access === 1) {
         const updateWebSocket = setInterval(() => {
           if (updateDataRef.current.flag && stocketStatusRef.current === 1) {
-            console.log("Ayooo");
             liveSocket.send(
               JSON.stringify({
                 type: "msg",
@@ -123,6 +128,7 @@ export default function FileListRoute() {
             setDoc={setDoc}
             updateData={updateData}
             setUpdateData={setUpdateData}
+            onlineUsers={onlineUsers}
           />
           <SimpleRichTextEditor
             doc={doc}

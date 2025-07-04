@@ -71,7 +71,7 @@ export default function SimpleRichTextEditor({
     if (doc && editorRef.current) {
       editorRef.current.innerHTML = doc.content || "";
     }
-  }, []);
+  }, [doc]);
 
   const handleKeyUp = () => {
     checkFormatting();

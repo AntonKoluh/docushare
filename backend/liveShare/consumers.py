@@ -4,13 +4,20 @@ import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from liveShare.models import MongoNote
+from Docs.models import DocEntry
 import redis
 from datetime import datetime, timedelta
 
 redis_client = redis.StrictRedis(host='192.168.0.110', port=6379, db=0)
 
-def saveToDBs(data):
-    print("Saving.....")
+def saveToDBs(data, id):
+    MongoNote.objects(doc_id=id).update_one(
+        set__content=data['content'],
+        upsert=True
+    )
+    doc_entry = DocEntry.objects.filter(id=id).first()
+    doc_entry.name = data['name']
+    doc_entry.save()
 
 def get_latest_redis(doc_name):
     redis_key = f"latest_doc{doc_name}"
@@ -25,11 +32,16 @@ def add_user_connection(doc_name, user):
     users = [note.decode() for note in notes]
     if user not in users:
         redis_client.rpush(f"users_doc{doc_name}", user)
-
     notes = redis_client.lrange(f"users_doc{doc_name}", 0, -1)
+    users = [note.decode() for note in notes]
+    return users
 
 def remove_user_connection(doc_name, user):
     redis_client.lrem(f"users_doc{doc_name}", 1, user)
+    notes = redis_client.lrange(f"users_doc{doc_name}", 0, -1)
+    users = [note.decode() for note in notes]
+    return users
+
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
@@ -56,9 +68,16 @@ class ChatConsumer(WebsocketConsumer):
     def disconnect(self, close_code):
         # Leave room group
         latest_msg = get_latest_redis(self.doc_name)
-        remove_user_connection(self.doc_name, self.username)
+        user_list = remove_user_connection(self.doc_name, self.username)
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                "type": "user.update",
+                "users": user_list,
+            }
+        )
         if latest_msg and latest_msg.get('editedBy') == self.username:
-            saveToDBs(latest_msg)
+            saveToDBs(latest_msg, self.doc_name)
         
 
             
@@ -75,7 +94,14 @@ class ChatConsumer(WebsocketConsumer):
             # Save username for later use
             self.username = data.get("username")
             print(self.username)
-            add_user_connection(self.doc_name, self.username)
+            user_list = add_user_connection(self.doc_name, self.username)
+            async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                "type": "user.update",
+                "users": user_list,
+            }
+        )
             return
 
         if msg_type != "msg":
@@ -92,6 +118,12 @@ class ChatConsumer(WebsocketConsumer):
         # Try to load the last message from Redis
         latest_msg = get_latest_redis(self.doc_name) if get_latest_redis(self.doc_name) else {}
         
+                # Update message fields
+        latest_msg.update({
+            "name": name,
+            "content": content,
+            "editedBy": self.username
+        })
 
         last_edit_time = latest_msg.get("time")
 
@@ -103,16 +135,9 @@ class ChatConsumer(WebsocketConsumer):
         elapsed = now - datetime.fromisoformat(last_edit_time)
         if elapsed > timedelta(seconds=30):
             latest_msg["time"] = now.isoformat()
-            saveToDBs(latest_msg)
+            saveToDBs(latest_msg, self.doc_name)
         else:
             latest_msg["time"] = last_edit_time
-
-        # Update message fields
-        latest_msg.update({
-            "name": name,
-            "content": content,
-            "editedBy": self.username
-        })
 
         # Save back to Redis
         redis_client.set(redis_key, json.dumps(latest_msg))
@@ -138,4 +163,11 @@ class ChatConsumer(WebsocketConsumer):
         content = event["content"]
 
         # Send message to WebSocket
-        self.send(text_data=json.dumps({"content": content, "name": name}))
+        self.send(text_data=json.dumps({"type": "msg", "content": content, "name": name}))
+
+    def user_update(self, event):
+        type = event["type"]
+        users = event["users"]
+
+        # Send message to WebSocket
+        self.send(text_data=json.dumps({"type": type, "users": users}))

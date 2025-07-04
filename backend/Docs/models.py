@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class DocEntry(models.Model):
+    uid = models.CharField(max_length=20)
     name = models.CharField(max_length=50)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     doc = models.IntegerField()
