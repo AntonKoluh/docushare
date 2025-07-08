@@ -27,7 +27,7 @@ export default function Login({ text }: incomingProps) {
   return (
     <button
       onClick={() => handleRedirectLogin()}
-      className="text-gray-100 cursor-pointer bg-purple-800 p-2 border-2 border-black rounded-md text-2xl"
+      className="px-6 py-1.5 bg-(--text-acc-c) border-2 border-(--bg-c) rounded-md text-lg text-(--bg-acc-c) font-bold hover:bg-(--acc-c) cursor-pointer hover:shadow-lg hover:shadow-amber-400 transition-all"
     >
       {text}
     </button>

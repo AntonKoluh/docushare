@@ -1,4 +1,5 @@
 from time import sleep
+import jwt
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -7,6 +8,12 @@ from Docs.serializer import DocEntrySerializer
 from Docs.serializer import CollaboratorsSerializer
 from liveShare.models import MongoNote
 from rest_framework.permissions import AllowAny
+import pypandoc
+import tempfile
+import os
+from django.http import FileResponse, HttpResponseBadRequest
+
+from sharednotes import settings
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -84,15 +91,17 @@ def update_colab_access(request):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def get_doc(request, id):
+def get_doc(request, uid):
     """
     Gets initial post as backup incase WS fail and for faster loading.
     + access verification
     access: -1 - denied, 0 - readonly, 1 - read/write
     """
-    doc_entry = DocEntry.objects.filter(id=id).first()
-    if not doc_entry:
-        return Response(status=404)
+    doc_entry = DocEntry.objects.filter(uid=uid).first()
+    if not doc_entry and request.user.is_authenticated:
+        user = User.objects.filter(username=request.user.username).first()
+        doc_entry = DocEntry(uid=uid, name="New Document", doc=uid, owner=user)
+        doc_entry.save()
     try:
         accessing_user = request.user.username
     except AttributeError:
@@ -105,8 +114,50 @@ def get_doc(request, id):
     else:
         access = 0 if doc_entry.public_access else -1
 
-    doc = MongoNote.objects.filter(doc_id=id).first()
+    doc = MongoNote.objects.filter(doc_id=doc_entry.uid).first()
+    if not doc:
+        MongoNote.objects(doc_id=doc_entry.uid).update_one(
+        set__content="",
+        upsert=True
+        )
+        doc = MongoNote.objects.filter(doc_id=doc_entry.uid).first()
     if access != -1:
-        return Response({"id": id, "title": doc_entry.name, "content": doc.content, "access": access})
+        return Response({"id": doc_entry.id, "uid": uid, "title": doc_entry.name, "content": doc.content, "access": access})
     return Response({"access": access})
-    
+
+def export_rtf_string_to_pdf(request, format, uid):
+    try:
+        doc_entry = DocEntry.objects.filter(uid=uid).first()
+        mongo_doc = MongoNote.objects.filter(doc_id=uid).first()
+        rtf_string = mongo_doc.content
+        
+
+        # Save RTF to temp file
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".rtf", mode="w", encoding="utf-8") as rtf_file:
+            rtf_file.write(rtf_string)
+            rtf_path = rtf_file.name
+
+        # Prepare PDF output path (do NOT keep file open)
+        pdf_file = tempfile.NamedTemporaryFile(delete=False, suffix="."+format)
+        pdf_path = pdf_file.name
+        pdf_file.close()  # Close so Pandoc and Django can access it
+
+        # Convert RTF to PDF
+        pypandoc.convert_file(rtf_path, format="html", to=format, outputfile=pdf_path)
+
+        # Return PDF response
+        response = FileResponse(open(pdf_path, 'rb'), content_type="application/pdf")
+        response["Content-Disposition"] = 'attachment; filename="document.pdf"'
+        return response
+
+    except Exception as e:
+        return HttpResponseBadRequest(f"Error: {e}")
+
+    finally:
+        # Clean up temp files
+        for path in [locals().get("rtf_path"), locals().get("pdf_path")]:
+            if path and os.path.exists(path):
+                try:
+                    os.remove(path)
+                except PermissionError:
+                    pass  # You can log this if needed

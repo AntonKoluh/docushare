@@ -22,7 +22,7 @@ export default function DropDownAccount({ displayName }: incomingProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="bg-purple-800 p-3 rounded-full cursor-pointer text-xl text-gray-200 font-bold">
+      <DropdownMenuTrigger className="bg-(--acc-c) p-3 rounded-full cursor-pointer text-xl text-(--text-c) font-bold hover:shadow-xl">
         {displayName}
       </DropdownMenuTrigger>
       <DropdownMenuContent sideOffset={25}>

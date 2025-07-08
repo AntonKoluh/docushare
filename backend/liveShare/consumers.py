@@ -10,14 +10,17 @@ from datetime import datetime, timedelta
 
 redis_client = redis.StrictRedis(host='192.168.0.110', port=6379, db=0)
 
-def saveToDBs(data, id):
+def saveToDBs(data, id, username):
     MongoNote.objects(doc_id=id).update_one(
         set__content=data['content'],
         upsert=True
     )
-    doc_entry = DocEntry.objects.filter(id=id).first()
-    doc_entry.name = data['name']
-    doc_entry.save()
+    doc_entry = DocEntry.objects.filter(uid=id).first()
+    if doc_entry:
+        doc_entry.updated_at = datetime.now()
+        doc_entry.last_modified_by = username
+        doc_entry.name = data['name']
+        doc_entry.save()
 
 def get_latest_redis(doc_name):
     redis_key = f"latest_doc{doc_name}"
@@ -77,7 +80,7 @@ class ChatConsumer(WebsocketConsumer):
             }
         )
         if latest_msg and latest_msg.get('editedBy') == self.username:
-            saveToDBs(latest_msg, self.doc_name)
+            saveToDBs(latest_msg, self.doc_name, self.username)
         
 
             
@@ -135,7 +138,7 @@ class ChatConsumer(WebsocketConsumer):
         elapsed = now - datetime.fromisoformat(last_edit_time)
         if elapsed > timedelta(seconds=30):
             latest_msg["time"] = now.isoformat()
-            saveToDBs(latest_msg, self.doc_name)
+            saveToDBs(latest_msg, self.doc_name, self.username)
         else:
             latest_msg["time"] = last_edit_time
 

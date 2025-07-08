@@ -20,7 +20,7 @@ class DocEntrySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DocEntry
-        fields = ['id', 'name', 'owner','public_access', 'doc', 'created_at', 'updated_at', 'collaborators']
+        fields = ['id', 'uid', 'name', 'owner','public_access', 'doc', 'created_at', 'updated_at', 'collaborators', 'last_modified_by']
 
     def get_collaborators(self, obj):
         collaborators = Collaborators.objects.filter(doc_entry=obj)

@@ -22,14 +22,14 @@ export default function Navbar({ user }: incomingProps) {
     console.log("result: " + JSON.stringify(result));
   };
   return (
-    <div className="bg-[rgba(0,0,0,0.5)] w-full">
-      <nav className="flex flex-row justify-between items-center h-24 w-full max-w-7xl mx-auto">
+    <div className="bg-(--bg-acc-c)/50  w-full shadow-2xl">
+      <nav className="flex flex-row justify-between items-center h-18 w-full max-w-7xl mx-auto">
         <div>
           <Link
             to="/"
-            className="flex flex-row justify-start items-center gap-2 w-full h-full text-gray-200 text-4xl font-bold"
+            className="flex flex-row justify-start items-center gap-2 w-full h-full text-(--text-c) text-4xl font-bold"
           >
-            <BookOpenText className="size-10 h-full" />
+            <BookOpenText className="size-10 h-full text-(--acc-c)" />
             Docs
           </Link>
         </div>
@@ -42,9 +42,7 @@ export default function Navbar({ user }: incomingProps) {
           {displayName ? (
             <DropDownAccount displayName={displayName} />
           ) : (
-            <p className={styles.link}>
-              <Login text="Login" />
-            </p>
+            <Login text="Login" />
           )}
         </div>
       </nav>

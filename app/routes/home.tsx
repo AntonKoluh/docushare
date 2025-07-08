@@ -45,12 +45,12 @@ export default function Home() {
   if (loading)
     return (
       <div className="w-full h-full bg-black">
-        <p className="text-4xl text-gray-200 text-center">Loading....</p>
+        <p className="text-4xl text-(--bg-acc-c) text-center">Loading....</p>
       </div>
     );
 
   return (
-    <div className="flex flex-col w-full h-full bg-[url(/coverbg.svg)] bg-center bg-no-repeat bg-cover">
+    <div className="flex flex-col w-full h-full bg-(--bg-c)/80">
       <Navbar user={user} />
       {user ? <DocList /> : <Welcome />}
     </div>

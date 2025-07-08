@@ -25,9 +25,13 @@ import { ResponsiveDialog } from "~/components/common/ResponsiveDialog";
 import ShareForm from "~/forms/ShareForm";
 import DeleteDialog from "./DeleteDialog";
 import type { FileListType } from "~/types/accountType";
+import useGetData from "~/hooks/useGetData";
+import SpinnerDownload from "~/components/ui/spinners/SpinnerDownload";
+import DownloadDialog from "./DownloadDialog";
 
 type incomingProps = {
   id: number;
+  uid: string;
   name: string;
   public_access: boolean;
   displayOwner: string;
@@ -37,6 +41,7 @@ type incomingProps = {
 
 export default function DropDownDocs({
   id,
+  uid,
   name,
   public_access,
   displayOwner,
@@ -49,7 +54,11 @@ export default function DropDownDocs({
   }
   const [shareOpen, setShareOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [downloadOpen, setDownloadOpen] = useState(false);
+  const [downloadLoading, setDownloadLoading] = useState(false);
   const disableShare = displayOwner === "Me" ? false : true;
+  const getData = useGetData();
+
   return (
     <>
       {/* Share Dialog */}
@@ -81,12 +90,22 @@ export default function DropDownDocs({
           data={data}
         />
       </ResponsiveDialog>
+      {/* Download Docs */}
+      <ResponsiveDialog
+        id={id}
+        title={"Download " + name}
+        description={null}
+        isOpen={downloadOpen}
+        setIsOpen={setDownloadOpen}
+      >
+        <DownloadDialog uid={uid} name={name} />
+      </ResponsiveDialog>
       <DropdownMenu aria-hidden="false">
         <DropdownMenuTrigger asChild>
-          <span className="flex flex-col w-10 h-10 justify-center items-center gap-1 hover:bg-gray-800 rounded-full">
-            <span className="rounded-full bg-gray-200 w-1 h-1"></span>
-            <span className="rounded-full bg-gray-200 w-1 h-1"></span>
-            <span className="rounded-full bg-gray-200 w-1 h-1"></span>
+          <span className="flex flex-col w-10 h-10 justify-center items-center gap-1 hover:bg-(--acc-c) rounded-full">
+            <span className="rounded-full bg-(--bg-acc-c) w-1 h-1"></span>
+            <span className="rounded-full bg-(--bg-acc-c) w-1 h-1"></span>
+            <span className="rounded-full bg-(--bg-acc-c) w-1 h-1"></span>
           </span>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -100,13 +119,15 @@ export default function DropDownDocs({
             {name.length > 7 && <HoverCardContent>{name}</HoverCardContent>}
           </HoverCard>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-xl">
-            <ArrowDownToLine />
-            Download Doc
-          </DropdownMenuItem>
-          <DropdownMenuItem className="text-xl">
-            <ArrowDownToLine />
-            Download JSON
+          <DropdownMenuItem
+            className="text-xl"
+            onSelect={(e) => {
+              setDownloadOpen(true);
+            }}
+            disabled={downloadLoading}
+          >
+            {downloadLoading ? <SpinnerDownload /> : <ArrowDownToLine />}
+            Download
           </DropdownMenuItem>
           <HoverCard>
             <HoverCardTrigger>

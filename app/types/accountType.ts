@@ -13,11 +13,13 @@ export type DBUserType = {
 
 export type FileListType = {
   id: number;
+  uid: string;
   name: string;
   owner: DBUserType;
   doc: number;
   public_access: boolean;
   created_at: string;
-  update_at: string;
+  updated_at: string;
+  last_modified_by: string;
   collaborators: any;
 };

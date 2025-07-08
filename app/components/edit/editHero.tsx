@@ -309,9 +309,6 @@ export default function SimpleRichTextEditor({
           >
             Clear
           </button>
-          <Button className="ml-auto text-xl bg-purple-700">
-            Summarize Text
-          </Button>
         </div>
         {/* disabled=} */}
         {/* Editor */}

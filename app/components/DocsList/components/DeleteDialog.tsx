@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import usePostData from "~/hooks/usePostData";
 import type { FileListType } from "~/types/accountType";
@@ -6,7 +7,7 @@ import type { FileListType } from "~/types/accountType";
 type incomingProps = {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   id: number;
-  setData: React.Dispatch<React.SetStateAction<FileListType[] | null>>;
+  setData: React.Dispatch<React.SetStateAction<FileListType[] | null>> | null;
   data: FileListType[] | null;
 };
 
@@ -17,15 +18,18 @@ export default function DeleteDialog({
   setData,
 }: incomingProps) {
   const postData = usePostData();
+  const navigate = useNavigate();
   const deleteDoc = async () => {
     const result = await postData("docs/delete/", { id: id });
     toast(result.data.msg);
-    if (result.data.success && data) {
+    if (result.data.success && data && setData) {
       const index = data?.findIndex((obj) => obj.id === id);
       const newList = [...data];
       newList.splice(index, 1);
       console.log(newList);
       setData(newList);
+    } else {
+      navigate("/");
     }
   };
   return (

@@ -1,4 +1,4 @@
-import { ArrowDownToLine, File, ClipboardPlus, Trash2 } from "lucide-react";
+import { Brain, Columns3Cog, List, Sun } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,32 +8,29 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
-export default function DropDownFile() {
+export default function DropDownAI() {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>File</DropdownMenuTrigger>
+      <DropdownMenuTrigger className="hover:bg-(--bg-acc-c) hover:text-(--text-c) cursor-pointer py-1 px-2 rounded-sm font-bold select-none">
+        AI
+      </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel className="text-2xl w-full flex flex-row justify-start items-center gap-3">
-          <File />
-          File
+          <Brain />
+          AI
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="text-xl">
-          <ClipboardPlus />
-          New Doc
+          <Sun />
+          Summarize
         </DropdownMenuItem>
         <DropdownMenuItem className="text-xl">
-          <ArrowDownToLine />
-          Download Doc
+          <List />
+          Convert to ToDo list
         </DropdownMenuItem>
         <DropdownMenuItem className="text-xl">
-          <ArrowDownToLine />
-          Download JSON
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-xl" variant="destructive">
-          <Trash2 />
-          Delete
+          <Columns3Cog />
+          Custom Action
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

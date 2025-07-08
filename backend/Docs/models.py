@@ -2,15 +2,18 @@ from django.db.models import Q
 from django.db import models
 from django.contrib.auth.models import User
 
+from liveShare.models import MongoNote
+
 # Create your models here.
 class DocEntry(models.Model):
     uid = models.CharField(max_length=20)
     name = models.CharField(max_length=50)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    doc = models.IntegerField()
+    doc = models.CharField(max_length=20)
     public_access = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
+    last_modified_by = models.CharField(max_length=20, null=True)
 
     @staticmethod
     def get_user_docs(user):
@@ -58,6 +61,8 @@ class DocEntry(models.Model):
         if not doc:
             return "Error, no doc found"
         if doc.owner.username == username:
+            info = MongoNote.objects.filter(doc_id=doc.uid).first()
+            info.delete()
             doc.delete()
             return f"{doc.name} has been deleted!"
         elif doc.owner.username != username:

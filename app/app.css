@@ -27,11 +27,11 @@ body {
 }
 
 p {
-  @apply text-2xl font-(family-name:--font-secondary) text-gray-300 font-semibold;
+  @apply text-2xl font-(family-name:--font-secondary) text-(--bg-acc-c)/90 font-semibold;
 }
 
 h1 {
-  @apply text-5xl font-bold font-(family-name:--font-main) text-gray-100;
+  @apply text-5xl font-bold font-(family-name:--font-main) text-(--bg-acc-c);
 }
 
 h3 {
@@ -89,6 +89,14 @@ h3 {
 }
 
 :root {
+  /* Pallet */
+  --acc-c: #9f8551;
+  --text-c: #e0e2e0;
+  --text-acc-c: #cab69d;
+  --bg-c: #96a4a5;
+  --bg-acc-c: #1f2946;
+
+  /* Pallet end */
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);

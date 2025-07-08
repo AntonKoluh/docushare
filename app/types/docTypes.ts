@@ -1,5 +1,6 @@
 type dataType = {
   id: number | null;
+  uid: string | null;
   title: string;
   content: string;
   access: number;

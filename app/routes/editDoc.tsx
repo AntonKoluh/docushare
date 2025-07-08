@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Route } from "./+types/editDoc";
 import SimpleRichTextEditor from "~/components/edit/editHero";
-import EditorNavBar from "~/components/navbar/EditorNavBar";
+import EditorNavBar from "~/components/edit/EditorNavBar";
 import { useNavigate, useParams } from "react-router";
 import useGetData from "~/hooks/useGetData";
 import { toast } from "sonner";
@@ -15,6 +15,7 @@ export function meta({}: Route.MetaArgs) {
 
 const emptyDoc = {
   id: null,
+  uid: null,
   title: "New Document",
   content: "",
   access: 0,
@@ -25,7 +26,7 @@ function generateShortId(): string {
 }
 
 export default function FileListRoute() {
-  const { id } = useParams<{ id: string | undefined }>();
+  const { id } = useParams<{ id: string }>();
   const [socketStatus, setSocketStatus] = useState(0);
   const [isLoading, setIsLoading] = useState(id ? true : false);
   const [doc, setDoc] = useState<dataType>(emptyDoc);
@@ -36,8 +37,15 @@ export default function FileListRoute() {
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const updateDataRef = useRef(updateData);
   const stocketStatusRef = useRef(socketStatus);
+  const liveSocketRef = useRef<WebSocket | null>(null);
   const getData = useGetData();
   const navigate = useNavigate();
+
+  function closeSocketConnection() {
+    if (liveSocketRef.current) {
+      liveSocketRef.current.close();
+    }
+  }
 
   useEffect(() => {
     updateDataRef.current = updateData;
@@ -50,8 +58,9 @@ export default function FileListRoute() {
   useEffect(() => {
     if (doc.access != -1) {
       const liveSocket = new WebSocket(
-        "ws://" + import.meta.env.VITE_WS_URL + "/ws/doc/1/"
+        "ws://" + import.meta.env.VITE_WS_URL + `/ws/doc/${id}/`
       );
+      liveSocketRef.current = liveSocket;
       liveSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
         if (data.type === "user.update") {
@@ -103,6 +112,7 @@ export default function FileListRoute() {
     if (id) {
       async function getContent() {
         const result = await getData("docs/" + id);
+        console.log(result);
         if (result.data.access === -1) {
           localStorage.setItem(
             "showToast",
@@ -129,6 +139,7 @@ export default function FileListRoute() {
             updateData={updateData}
             setUpdateData={setUpdateData}
             onlineUsers={onlineUsers}
+            closeSocket={closeSocketConnection}
           />
           <SimpleRichTextEditor
             doc={doc}

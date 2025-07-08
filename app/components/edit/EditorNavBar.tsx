@@ -16,6 +16,9 @@ import {
 } from "~/components/ui/hover-card";
 import { ResponsiveDialog } from "../common/ResponsiveDialog";
 import ShareForm from "~/forms/ShareForm";
+import DownloadDialog from "../DocsList/components/DownloadDialog";
+import DeleteDialog from "../DocsList/components/DeleteDialog";
+import { MoveLeft } from "lucide-react";
 
 type incomingProps = {
   doc: dataType;
@@ -24,6 +27,7 @@ type incomingProps = {
   updateData: updateDataType;
   setUpdateData: Dispatch<SetStateAction<updateDataType>>;
   onlineUsers: string[];
+  closeSocket: () => void;
 };
 
 export default function EditorNavBar({
@@ -33,9 +37,12 @@ export default function EditorNavBar({
   updateData,
   setUpdateData,
   onlineUsers,
+  closeSocket,
 }: incomingProps) {
   const fileNameRef = useRef<HTMLInputElement>(null);
   const [shareOpen, setShareOpen] = useState(false);
+  const [downloadOpen, setDownloadOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const public_access = true;
   useEffect(() => {
     if (fileNameRef.current) {
@@ -54,6 +61,21 @@ export default function EditorNavBar({
 
   return (
     <>
+      {/* Delete doc  */}
+      <ResponsiveDialog
+        id={doc.id!}
+        title={"Delete " + doc.title!}
+        description={null}
+        isOpen={deleteOpen}
+        setIsOpen={setDeleteOpen}
+      >
+        <DeleteDialog
+          setIsOpen={setDeleteOpen}
+          id={doc.id!}
+          setData={null}
+          data={null}
+        />
+      </ResponsiveDialog>
       {/* Share Dialog */}
       <ResponsiveDialog
         id={doc.id || 5}
@@ -68,7 +90,16 @@ export default function EditorNavBar({
           allowPublicAccessProp={public_access}
         />
       </ResponsiveDialog>
-      <div className="h-fit sticky w-full bg-gray-100 flex flex-col justify-center items-center text-black">
+      <ResponsiveDialog
+        id={doc.id!}
+        title={"Download " + doc.title}
+        description={null}
+        isOpen={downloadOpen}
+        setIsOpen={setDownloadOpen}
+      >
+        <DownloadDialog uid={doc.uid!} name={doc.title} />
+      </ResponsiveDialog>
+      <div className="h-fit sticky w-full bg-(--bg-c) flex flex-col justify-center items-center text-black">
         <div className="mx-auto max-w-7xl w-full">
           <div className="w-full text-left text-2xl font-bold px-1 my-1 flex flex-row justify-between items-center gap-4 mt-2">
             <HoverCard>
@@ -109,7 +140,7 @@ export default function EditorNavBar({
               <p className="text-black! mr-2">Viewing:</p>
               {onlineUsers.map((user) => (
                 <div
-                  className={`rounded-full bg-green-400 h-10 w-10 text-center flex justify-center items-center border-2 border-black cursor-default ${
+                  className={`rounded-full bg-green-700 h-10 w-10 text-center flex justify-center items-center border-2 border-black cursor-default ${
                     user.startsWith("Guest")
                       ? "bg-yellow-900 text-gray-300"
                       : ""
@@ -127,9 +158,13 @@ export default function EditorNavBar({
             </div>
           </div>
           <div className="flex justify-center items-center w-full border-t-2 border-t-gray-500">
-            <ul className="list-none flex flex-row justify-start items-center w-full gap-2 bg-gray-100">
+            <ul className="list-none flex flex-row-reverse justify-start items-center w-full gap-2 bg-(--bg-c)">
               <li className="text-xl px-2 py-1 hover:bg-gray-400 cursor-pointer">
-                <DropDownFile />
+                <DropDownFile
+                  setDownloadOpen={setDownloadOpen}
+                  closeSocket={closeSocket}
+                  setDeleteOpen={setDeleteOpen}
+                />
               </li>
               <li className="text-xl px-2 py-1 hover:bg-gray-400 cursor-pointer">
                 <DropDownSocial setShareOpen={setShareOpen} />
@@ -137,8 +172,15 @@ export default function EditorNavBar({
               <li className="text-xl px-2 py-1 hover:bg-gray-400 cursor-pointer font-bold">
                 <DropDownAI />
               </li>
-              <li className="bg-black text-xl px-2 rounded-md ml-auto text-white hover:bg-gray-400 cursor-pointer hover:text-black">
-                <Link to="/">Back</Link>
+              <li className="bg-(--bg-acc-c) text-xl px-2 py-1 rounded-sm mr-auto text-(--text-c) font-bold hover:bg-(--bg-acc-c) hover:shadow-sm hover:shadow-amber-500 transition-all cursor-pointer">
+                <Link
+                  to="/"
+                  onClick={closeSocket}
+                  className="flex flex-row justify-center items-center gap-2"
+                >
+                  <MoveLeft />
+                  Back
+                </Link>
               </li>
             </ul>
           </div>
