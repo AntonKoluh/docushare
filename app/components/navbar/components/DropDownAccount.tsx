@@ -30,7 +30,16 @@ export default function DropDownAccount({ displayName }: incomingProps) {
           Account
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-xl">Settings</DropdownMenuItem>
+        <Link to="/">
+          <DropdownMenuItem className="text-xl cursor-pointer">
+            Docs
+          </DropdownMenuItem>
+        </Link>
+        <Link to="profile/">
+          <DropdownMenuItem className="text-xl cursor-pointer">
+            Settings
+          </DropdownMenuItem>
+        </Link>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="text-xl"

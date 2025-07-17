@@ -11,7 +11,7 @@ import React from "react";
 import type { incomingData } from "~/types/docTypes.tsx";
 
 const schema = z.object({
-  email: z.union([z.string().email(), z.literal("")]).optional(),
+  email: z.string().email(),
   allowEdit: z.boolean(),
 });
 
@@ -30,6 +30,7 @@ const ShareForm = ({ id, setShareOpen }: incomingProps) => {
   const getData = useGetData();
   const {
     register,
+    watch,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormFields>({
@@ -71,10 +72,18 @@ const ShareForm = ({ id, setShareOpen }: incomingProps) => {
       {errors.email && (
         <div className="text-red-500">{errors.email.message}</div>
       )}
-      <div className="flex flex-row items-center justify-start w-full gap-10">
-        <p className="text-black! text-lg!">Allow Collaborator Editing: </p>
-        <input {...register("allowEdit")} type="checkbox" className="size-5" />
-      </div>
+      {watch("email") != "" && (
+        <div className="flex flex-row items-center justify-start w-full gap-10">
+          <p className="text-black! text-lg!">
+            Allow {watch("email")} to edit:{" "}
+          </p>
+          <input
+            {...register("allowEdit")}
+            type="checkbox"
+            className="size-5"
+          />
+        </div>
+      )}
       <div className="bg-(--bg-c) border-2 border-gray-400 w-full px-4 py-2">
         <p className="text-black! mb-2">Current collaborators:</p>
         <div className="flex flex-row w-full justify-start items-center gap-2">

@@ -104,7 +104,7 @@ class Collaborators(models.Model):
         doc_entry = DocEntry.objects.filter(id = doc_id).first()
         owner_of_doc_obj = User.objects.filter(username = owner_of_doc).first()
         success = False
-        if not user_to_add:
+        if not user_to_add_obj:
             msg = f"{user_to_add} is not registered"
         elif not doc_entry:
             msg = "Doc entry does not exist"

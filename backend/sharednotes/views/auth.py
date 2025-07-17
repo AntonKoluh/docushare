@@ -40,7 +40,10 @@ def google_login(request):
         
         if response.status_code != 200:
             logger.error(f"Token verification failed: {response.text}")
-            return None
+            return Response(
+                {'error': 'Invalid Google token'}, 
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         
         token_info = response.json()
         user_data = id_token.verify_oauth2_token(

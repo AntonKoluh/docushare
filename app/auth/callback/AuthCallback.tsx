@@ -25,7 +25,7 @@ export default function AuthCallback() {
     };
 
     handleRedirectSuccess();
-  });
+  }, []);
 
   return <p className="text-white text-xl">Logging you in...</p>;
 }
