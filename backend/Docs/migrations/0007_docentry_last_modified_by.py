@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("Docs", "0006_alter_docentry_doc"),
+        ("docs", "0006_alter_docentry_doc"),
     ]
 
     operations = [

@@ -48,9 +48,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
-    'sharednotes.API.apps.ApiConfig',
-    'Docs',
-    'liveShare',
+    'sharednotes.api.apps.ApiConfig',
+    'docs',
+    'live_share',
 ]
 
 MIDDLEWARE = [

@@ -1,5 +1,0 @@
-@reference "tailwindcss";
-
-.link {
-  @apply font-bold;
-}

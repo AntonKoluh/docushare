@@ -1,4 +1,4 @@
-import { Logout } from "./Logout";
+import { Logout } from "../helpers/Logout";
 import { useNavigate } from "react-router";
 import { useCallback } from "react";
 
@@ -42,6 +42,7 @@ export default function usePostData() {
         return { success: false, msg: "Please login." };
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [navigate]
   );
   return authFetch;

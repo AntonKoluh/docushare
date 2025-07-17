@@ -1,8 +1,8 @@
-import { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import usePostData from "~/hooks/usePostData";
 import type { FileListType } from "~/types/accountType";
+import React from "react";
 
 type incomingProps = {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;

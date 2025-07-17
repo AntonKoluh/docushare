@@ -61,7 +61,7 @@ class Migration(migrations.Migration):
                 (
                     "doc_entry",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="Docs.docentry"
+                        on_delete=django.db.models.deletion.CASCADE, to="docs.docentry"
                     ),
                 ),
             ],

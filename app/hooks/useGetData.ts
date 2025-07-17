@@ -1,4 +1,4 @@
-import { Logout } from "./Logout";
+import { Logout } from "../helpers/Logout";
 import { useNavigate } from "react-router";
 import { useCallback } from "react";
 
@@ -36,12 +36,16 @@ export default function useGetData() {
       if (res.status === 200) {
         const data = await res.json();
         return { success: true, data };
-      } else {
+      } else if (res.status === 401) {
         Logout();
+        navigate("/");
+        return { success: false, msg: "Please login." };
+      } else {
         navigate("/");
         return { success: false, msg: "Please login." };
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [navigate]
   );
   return authFetch;

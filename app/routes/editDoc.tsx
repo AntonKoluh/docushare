@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import type { Route } from "./+types/editDoc";
 import SimpleRichTextEditor from "~/components/edit/editHero";
 import EditorNavBar from "~/components/edit/EditorNavBar";
 import { useNavigate, useParams } from "react-router";
 import useGetData from "~/hooks/useGetData";
-import { toast } from "sonner";
+import type { dataType, updateDataType } from "~/types/docTypes.tsx";
 
-export function meta({}: Route.MetaArgs) {
+export function meta() {
   return [
     { title: "Edit" },
     { name: "description", content: "Easy to share notes!" },
@@ -25,7 +24,7 @@ function generateShortId(): string {
   return Math.random().toString(36).substring(2, 7); // base36 = [0-9a-z]
 }
 
-export default function FileListRoute() {
+const FileListRoute = () => {
   const { id } = useParams<{ id: string }>();
   const [socketStatus, setSocketStatus] = useState(0);
   const [isLoading, setIsLoading] = useState(id ? true : false);
@@ -97,8 +96,6 @@ export default function FileListRoute() {
                 content: updateDataRef.current.content,
               })
             );
-
-            // Update the actual state
             setUpdateData((prev) => ({ ...prev, flag: false }));
           }
         }, 2000);
@@ -106,6 +103,7 @@ export default function FileListRoute() {
         return () => clearInterval(updateWebSocket);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [doc.access]);
 
   useEffect(() => {
@@ -125,6 +123,7 @@ export default function FileListRoute() {
       }
       getContent();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
   return (
     <div className="flex flex-col w-full h-full bg-gray-200 gap-2">
@@ -135,7 +134,6 @@ export default function FileListRoute() {
           <EditorNavBar
             doc={doc}
             socketStatus={socketStatus}
-            setDoc={setDoc}
             updateData={updateData}
             setUpdateData={setUpdateData}
             onlineUsers={onlineUsers}
@@ -143,7 +141,6 @@ export default function FileListRoute() {
           />
           <SimpleRichTextEditor
             doc={doc}
-            setDoc={setDoc}
             updateData={updateData}
             setUpdateData={setUpdateData}
           />
@@ -151,4 +148,6 @@ export default function FileListRoute() {
       )}
     </div>
   );
-}
+};
+
+export default FileListRoute;

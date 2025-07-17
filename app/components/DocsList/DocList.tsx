@@ -8,13 +8,12 @@ import NewFile from "./components/newDoc";
 import { useEffect, useState } from "react";
 import useGetData from "~/hooks/useGetData";
 import type { FileListType } from "~/types/accountType";
-import { ResponsiveDialog } from "../common/ResponsiveDialog";
 import DropDownDocs from "./components/DropDownDocs";
 import SpinnerDocList from "../ui/spinners/SpinnerDocList";
 import { generateUID } from "~/helpers/helpers";
 import { FileMinus } from "lucide-react";
 
-export default function DocList() {
+const DocList = () => {
   const getData = useGetData();
   const [data, setData] = useState<FileListType[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,6 +26,7 @@ export default function DocList() {
       setIsLoading(false);
     };
     getListData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -44,11 +44,7 @@ export default function DocList() {
           <p className="flex-6 font-bold w-full">Name</p>
           <p className="flex-2 font-bold w-full text-center">Owner</p>
           <p className="flex-2 font-bold w-full text-center">Last modified</p>
-          <p className="flex-1 w-full">
-            <span></span>
-            <span></span>
-            <span></span>
-          </p>
+          <p className="flex-1 w-full"></p>
         </div>
         {isLoading ? (
           <SpinnerDocList />
@@ -110,4 +106,6 @@ export default function DocList() {
       </div>
     </div>
   );
-}
+};
+
+export default DocList;

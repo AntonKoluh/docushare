@@ -15,30 +15,29 @@ import {
   HoverCardTrigger,
 } from "~/components/ui/hover-card";
 import { ResponsiveDialog } from "../common/ResponsiveDialog";
-import ShareForm from "~/forms/ShareForm";
+import ShareForm from "~/forms/ShareForm/ShareForm";
 import DownloadDialog from "../DocsList/components/DownloadDialog";
 import DeleteDialog from "../DocsList/components/DeleteDialog";
 import { MoveLeft } from "lucide-react";
+import type { dataType, updateDataType } from "~/types/docTypes.tsx";
 
 type incomingProps = {
   doc: dataType;
   socketStatus: number;
-  setDoc: Dispatch<SetStateAction<dataType>>;
   updateData: updateDataType;
   setUpdateData: Dispatch<SetStateAction<updateDataType>>;
   onlineUsers: string[];
   closeSocket: () => void;
 };
 
-export default function EditorNavBar({
+const EditorNavBar = ({
   doc,
   socketStatus,
-  setDoc,
   updateData,
   setUpdateData,
   onlineUsers,
   closeSocket,
-}: incomingProps) {
+}: incomingProps) => {
   const fileNameRef = useRef<HTMLInputElement>(null);
   const [shareOpen, setShareOpen] = useState(false);
   const [downloadOpen, setDownloadOpen] = useState(false);
@@ -48,6 +47,7 @@ export default function EditorNavBar({
     if (fileNameRef.current) {
       fileNameRef.current.value = doc ? doc.title : "New Document";
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [doc?.title]);
 
   function handleOnTitleChange() {
@@ -63,7 +63,6 @@ export default function EditorNavBar({
     <>
       {/* Delete doc  */}
       <ResponsiveDialog
-        id={doc.id!}
         title={"Delete " + doc.title!}
         description={null}
         isOpen={deleteOpen}
@@ -78,8 +77,7 @@ export default function EditorNavBar({
       </ResponsiveDialog>
       {/* Share Dialog */}
       <ResponsiveDialog
-        id={doc.id || 5}
-        title={name + " Settings"}
+        title={doc.title + " Settings"}
         description={null}
         isOpen={shareOpen}
         setIsOpen={setShareOpen}
@@ -91,7 +89,6 @@ export default function EditorNavBar({
         />
       </ResponsiveDialog>
       <ResponsiveDialog
-        id={doc.id!}
         title={"Download " + doc.title}
         description={null}
         isOpen={downloadOpen}
@@ -99,7 +96,7 @@ export default function EditorNavBar({
       >
         <DownloadDialog uid={doc.uid!} name={doc.title} />
       </ResponsiveDialog>
-      <div className="h-fit sticky w-full bg-(--bg-c) flex flex-col justify-center items-center text-black">
+      <div className="h-fit sticky w-full bg-(--text-c) flex flex-col justify-center items-center text-black max-w-7xl mx-auto p-2 rounded-md mt-1">
         <div className="mx-auto max-w-7xl w-full">
           <div className="w-full text-left text-2xl font-bold px-1 my-1 flex flex-row justify-between items-center gap-4 mt-2">
             <HoverCard>
@@ -158,18 +155,18 @@ export default function EditorNavBar({
             </div>
           </div>
           <div className="flex justify-center items-center w-full border-t-2 border-t-gray-500">
-            <ul className="list-none flex flex-row-reverse justify-start items-center w-full gap-2 bg-(--bg-c)">
-              <li className="text-xl px-2 py-1 hover:bg-gray-400 cursor-pointer">
+            <ul className="list-none flex flex-row-reverse justify-start items-center w-full gap-2 bg-(--text-c)">
+              <li className="text-xl px-2 py-1  cursor-pointer">
                 <DropDownFile
                   setDownloadOpen={setDownloadOpen}
                   closeSocket={closeSocket}
                   setDeleteOpen={setDeleteOpen}
                 />
               </li>
-              <li className="text-xl px-2 py-1 hover:bg-gray-400 cursor-pointer">
+              <li className="text-xl px-2 py-1  cursor-pointer">
                 <DropDownSocial setShareOpen={setShareOpen} />
               </li>
-              <li className="text-xl px-2 py-1 hover:bg-gray-400 cursor-pointer font-bold">
+              <li className="text-xl px-2 py-1  cursor-pointer font-bold">
                 <DropDownAI />
               </li>
               <li className="bg-(--bg-acc-c) text-xl px-2 py-1 rounded-sm mr-auto text-(--text-c) font-bold hover:bg-(--bg-acc-c) hover:shadow-sm hover:shadow-amber-500 transition-all cursor-pointer">
@@ -188,4 +185,6 @@ export default function EditorNavBar({
       </div>
     </>
   );
-}
+};
+
+export default EditorNavBar;

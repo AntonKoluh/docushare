@@ -1,26 +1,18 @@
 import { BookOpenText } from "lucide-react";
-import styles from "./navbar.module.css";
 import { Link } from "react-router";
 import type { userType } from "~/types/accountType";
 import DropDownAccount from "./components/DropDownAccount";
-import { useEffect, useState } from "react";
 import Login from "~/auth/login";
-import useGetData from "~/hooks/useGetData";
 
 type incomingProps = {
   user: userType | null;
 };
 
-export default function Navbar({ user }: incomingProps) {
-  const getData = useGetData();
+const Navbar = ({ user }: incomingProps) => {
   const displayName = user
     ? user.first_name.slice(0, 1) + user.last_name.slice(0, 1)
     : null;
 
-  const handleCheckLogin = async () => {
-    const result = await getData("docs/");
-    console.log("result: " + JSON.stringify(result));
-  };
   return (
     <div className="bg-(--bg-acc-c)/50  w-full shadow-2xl">
       <nav className="flex flex-row justify-between items-center h-18 w-full max-w-7xl mx-auto">
@@ -48,4 +40,6 @@ export default function Navbar({ user }: incomingProps) {
       </nav>
     </div>
   );
-}
+};
+
+export default Navbar;

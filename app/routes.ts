@@ -4,5 +4,4 @@ export default [
   index("routes/home.tsx"),
   route("edit/:id?", "routes/editDoc.tsx"),
   route("auth/callback", "auth/callback/AuthCallback.tsx"),
-  route("test", "routes/test.tsx"),
 ] satisfies RouteConfig;

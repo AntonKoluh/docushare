@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { Logout } from "~/hooks/Logout";
+import { Logout } from "~/helpers/Logout";
 
 type incomingProps = {
   displayName: string;
@@ -22,7 +22,7 @@ export default function DropDownAccount({ displayName }: incomingProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="bg-(--acc-c) p-3 rounded-full cursor-pointer text-xl text-(--text-c) font-bold hover:shadow-xl">
+      <DropdownMenuTrigger className="bg-(--acc-c) p-3 rounded-full cursor-pointer text-xl text-(--text-c) font-bold w-14 h-14 hover:shadow-xl">
         {displayName}
       </DropdownMenuTrigger>
       <DropdownMenuContent sideOffset={25}>

@@ -1,21 +1,26 @@
-# chat/consumers.py
+"""
+Websocket live service handler
+"""
 import json
-
+from datetime import datetime, timedelta
+import redis
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-from liveShare.models import MongoNote
-from Docs.models import DocEntry
-import redis
-from datetime import datetime, timedelta
+from live_share.models import MongoNote
+from docs.models import DocEntry
+
 
 redis_client = redis.StrictRedis(host='192.168.0.110', port=6379, db=0)
 
-def saveToDBs(data, id, username):
-    MongoNote.objects(doc_id=id).update_one(
+def save_to_dbs(data, doc_id, username):
+    """
+    Saves changes from redis to Mongo and updates filename in doc_entry
+    """
+    MongoNote.objects(doc_id=doc_id).update_one( # pylint: disable=no-member
         set__content=data['content'],
         upsert=True
     )
-    doc_entry = DocEntry.objects.filter(uid=id).first()
+    doc_entry = DocEntry.objects.filter(uid=doc_id).first()
     if doc_entry:
         doc_entry.updated_at = datetime.now()
         doc_entry.last_modified_by = username
@@ -23,6 +28,9 @@ def saveToDBs(data, id, username):
         doc_entry.save()
 
 def get_latest_redis(doc_name):
+    """
+    Gets the latest change from redis
+    """
     redis_key = f"latest_doc{doc_name}"
     latest_raw = redis_client.get(redis_key)
     if latest_raw:
@@ -31,6 +39,9 @@ def get_latest_redis(doc_name):
     return None
 
 def add_user_connection(doc_name, user):
+    """
+    Adds a user connection to a list
+    """
     notes = redis_client.lrange(f"users_doc{doc_name}", 0, -1)
     users = [note.decode() for note in notes]
     if user not in users:
@@ -40,6 +51,9 @@ def add_user_connection(doc_name, user):
     return users
 
 def remove_user_connection(doc_name, user):
+    """
+    Removed a disconnected user from a list
+    """
     redis_client.lrem(f"users_doc{doc_name}", 1, user)
     notes = redis_client.lrange(f"users_doc{doc_name}", 0, -1)
     users = [note.decode() for note in notes]
@@ -47,9 +61,12 @@ def remove_user_connection(doc_name, user):
 
 
 class ChatConsumer(WebsocketConsumer):
+    """
+    Websocket handler
+    """
     def connect(self):
-        self.doc_name = self.scope["url_route"]["kwargs"]["doc_id"]
-        self.room_group_name = f"doc_{self.doc_name}"
+        self.doc_name = self.scope["url_route"]["kwargs"]["doc_id"] # pylint: disable=attribute-defined-outside-init
+        self.room_group_name = f"doc_{self.doc_name}" # pylint: disable=attribute-defined-outside-init
 
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
@@ -68,7 +85,7 @@ class ChatConsumer(WebsocketConsumer):
                 "name": latest_msg["name"],
             }))
 
-    def disconnect(self, close_code):
+    def disconnect(self, code=None):
         # Leave room group
         latest_msg = get_latest_redis(self.doc_name)
         user_list = remove_user_connection(self.doc_name, self.username)
@@ -80,22 +97,22 @@ class ChatConsumer(WebsocketConsumer):
             }
         )
         if latest_msg and latest_msg.get('editedBy') == self.username:
-            saveToDBs(latest_msg, self.doc_name, self.username)
-        
+            save_to_dbs(latest_msg, self.doc_name, self.username)
 
-            
+
+
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name, self.channel_name
         )
 
     # Receive message from WebSocket
-    def receive(self, text_data):
+    def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
         msg_type = data.get("type")
 
         if msg_type == "init":
             # Save username for later use
-            self.username = data.get("username")
+            self.username = data.get("username") # pylint: disable=attribute-defined-outside-init
             print(self.username)
             user_list = add_user_connection(self.doc_name, self.username)
             async_to_sync(self.channel_layer.group_send)(
@@ -120,8 +137,6 @@ class ChatConsumer(WebsocketConsumer):
 
         # Try to load the last message from Redis
         latest_msg = get_latest_redis(self.doc_name) if get_latest_redis(self.doc_name) else {}
-        
-                # Update message fields
         latest_msg.update({
             "name": name,
             "content": content,
@@ -138,7 +153,7 @@ class ChatConsumer(WebsocketConsumer):
         elapsed = now - datetime.fromisoformat(last_edit_time)
         if elapsed > timedelta(seconds=30):
             latest_msg["time"] = now.isoformat()
-            saveToDBs(latest_msg, self.doc_name, self.username)
+            save_to_dbs(latest_msg, self.doc_name, self.username)
         else:
             latest_msg["time"] = last_edit_time
 
@@ -157,11 +172,12 @@ class ChatConsumer(WebsocketConsumer):
             }
         )
 
-    # Receive message from room group
     def chat_message(self, event):
+        """
+        Recieve message from room group
+        """
         if event.get("sender") == self.username:
             return
-        id = event["id"]
         name = event["name"]
         content = event["content"]
 
@@ -169,8 +185,11 @@ class ChatConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps({"type": "msg", "content": content, "name": name}))
 
     def user_update(self, event):
-        type = event["type"]
+        """
+        Update user statuses
+        """
+        event_type = event["type"]
         users = event["users"]
 
         # Send message to WebSocket
-        self.send(text_data=json.dumps({"type": type, "users": users}))
+        self.send(text_data=json.dumps({"type": event_type, "users": users}))

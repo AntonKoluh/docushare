@@ -1,3 +1,5 @@
+import type { collabType } from "~/types/docTypes.tsx";
+
 export type userType = {
   id: number;
   first_name: string;
@@ -21,5 +23,5 @@ export type FileListType = {
   created_at: string;
   updated_at: string;
   last_modified_by: string;
-  collaborators: any;
+  collaborators: collabType[];
 };

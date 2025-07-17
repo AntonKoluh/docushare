@@ -6,10 +6,11 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import type { Route } from "./+types/root";
 import "./app.css";
 import { Toaster } from "~/components/ui/sonner";
+import React from "react";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },

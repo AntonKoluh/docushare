@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("Docs", "0003_docentry_publicaccess"),
+        ("docs", "0003_docentry_publicaccess"),
     ]
 
     operations = [

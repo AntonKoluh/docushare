@@ -20,21 +20,19 @@ import {
   X,
 } from "lucide-react";
 import { useParams } from "react-router";
-import { Button } from "../ui/button";
+import type { dataType, updateDataType } from "~/types/docTypes.tsx";
 
 type incomingProps = {
   doc: dataType;
-  setDoc: Dispatch<SetStateAction<dataType>>;
   updateData: updateDataType;
   setUpdateData: Dispatch<SetStateAction<updateDataType>>;
 };
 
-export default function SimpleRichTextEditor({
+const SimpleRichTextEditor = ({
   doc,
-  setDoc,
   updateData,
   setUpdateData,
-}: incomingProps) {
+}: incomingProps) => {
   const { id } = useParams<{ id: string }>();
   const editorRef = useRef<HTMLDivElement>(null);
   const [activeFormats, setActiveFormats] = useState({
@@ -91,14 +89,6 @@ export default function SimpleRichTextEditor({
       };
       setUpdateData(newData);
     }
-  };
-
-  const getContent = () => {
-    return editorRef.current?.innerHTML || "";
-  };
-
-  const getTextContent = () => {
-    return editorRef.current?.textContent || "";
   };
 
   const clearContent = () => {
@@ -466,4 +456,6 @@ export default function SimpleRichTextEditor({
       )}
     </div>
   );
-}
+};
+
+export default SimpleRichTextEditor;

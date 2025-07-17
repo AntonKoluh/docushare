@@ -7,8 +7,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import React from "react";
 
-export default function DropDownSocial({ setShareOpen }: any) {
+type incomingProps = {
+  setShareOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export default function DropDownSocial({ setShareOpen }: incomingProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="hover:bg-(--bg-acc-c) hover:text-(--text-c) cursor-pointer py-1 px-2 rounded-sm font-bold select-none">

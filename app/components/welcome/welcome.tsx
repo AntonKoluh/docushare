@@ -1,6 +1,6 @@
 import Login from "~/auth/login";
 
-export default function Welcome() {
+const Welcome = () => {
   return (
     <div className="w-fit h-full mx-auto max-w-7xl flex flex-col justify-start items-center p-10">
       <p className="mt-15">
@@ -26,4 +26,6 @@ export default function Welcome() {
       </div>
     </div>
   );
-}
+};
+
+export default Welcome;

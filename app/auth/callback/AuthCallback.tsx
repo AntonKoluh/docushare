@@ -8,7 +8,6 @@ export default function AuthCallback() {
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
     if (!code) return;
-    console.log("google access: " + code);
     const handleRedirectSuccess = async () => {
       const res = await fetch(baseUrl + "/auth/google/", {
         method: "POST",
@@ -26,7 +25,7 @@ export default function AuthCallback() {
     };
 
     handleRedirectSuccess();
-  }, []);
+  });
 
   return <p className="text-white text-xl">Logging you in...</p>;
 }

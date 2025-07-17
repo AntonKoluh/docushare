@@ -1,0 +1,6 @@
+************* Module live_share
+live_share\__init__.py:1:0: E5110: Django was not configured. For more information run pylint --load-plugins=pylint_django --help-msg=django-not-configured (django-not-configured)
+
+-----------------------------------
+Your code has been rated at 9.49/10
+

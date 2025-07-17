@@ -1,10 +1,4 @@
-import {
-  ArrowDownToLine,
-  File,
-  ClipboardPlus,
-  Share,
-  Trash2,
-} from "lucide-react";
+import { ArrowDownToLine, File, Share, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,16 +12,14 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "~/components/ui/hover-card";
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
-import { Switch } from "@radix-ui/react-switch";
-import { Input } from "~/components/ui/input";
+import { useState } from "react";
 import { ResponsiveDialog } from "~/components/common/ResponsiveDialog";
-import ShareForm from "~/forms/ShareForm";
+import ShareForm from "~/forms/ShareForm/ShareForm";
 import DeleteDialog from "./DeleteDialog";
 import type { FileListType } from "~/types/accountType";
-import useGetData from "~/hooks/useGetData";
-import SpinnerDownload from "~/components/ui/spinners/SpinnerDownload";
 import DownloadDialog from "./DownloadDialog";
+import PublicViewingDialog from "./PublicViewingDialog";
+import React from "react";
 
 type incomingProps = {
   id: number;
@@ -53,17 +45,15 @@ export default function DropDownDocs({
     displayName = displayName.slice(0, 7) + "...";
   }
   const [shareOpen, setShareOpen] = useState(false);
+  const [publicOpen, setPublicOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [downloadOpen, setDownloadOpen] = useState(false);
-  const [downloadLoading, setDownloadLoading] = useState(false);
   const disableShare = displayOwner === "Me" ? false : true;
-  const getData = useGetData();
-
+  console.log(data);
   return (
     <>
       {/* Share Dialog */}
       <ResponsiveDialog
-        id={id}
         title={name + " Settings"}
         description={null}
         isOpen={shareOpen}
@@ -75,9 +65,23 @@ export default function DropDownDocs({
           allowPublicAccessProp={public_access}
         />
       </ResponsiveDialog>
+      {/* Public Access Dialog */}
+      <ResponsiveDialog
+        title={name + " Access"}
+        description={null}
+        isOpen={publicOpen}
+        setIsOpen={setPublicOpen}
+      >
+        <PublicViewingDialog
+          id={id}
+          link={uid}
+          publicAccess={public_access}
+          setData={setData}
+          data={data}
+        />
+      </ResponsiveDialog>
       {/* Delete Dialog */}
       <ResponsiveDialog
-        id={id}
         title={"Delete " + name}
         description={null}
         isOpen={deleteOpen}
@@ -92,7 +96,6 @@ export default function DropDownDocs({
       </ResponsiveDialog>
       {/* Download Docs */}
       <ResponsiveDialog
-        id={id}
         title={"Download " + name}
         description={null}
         isOpen={downloadOpen}
@@ -121,25 +124,34 @@ export default function DropDownDocs({
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="text-xl"
-            onSelect={(e) => {
+            onSelect={() => {
               setDownloadOpen(true);
             }}
-            disabled={downloadLoading}
           >
-            {downloadLoading ? <SpinnerDownload /> : <ArrowDownToLine />}
+            <ArrowDownToLine />
             Download
           </DropdownMenuItem>
           <HoverCard>
             <HoverCardTrigger>
               <DropdownMenuItem
                 className="text-xl z-50"
-                onSelect={(e) => {
+                onSelect={() => {
+                  setPublicOpen(true);
+                }}
+                disabled={disableShare}
+              >
+                <Share />
+                Public Access
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-xl z-50"
+                onSelect={() => {
                   setShareOpen(true);
                 }}
                 disabled={disableShare}
               >
                 <Share />
-                Share
+                Manage Collaborators
               </DropdownMenuItem>
             </HoverCardTrigger>
             {disableShare && (
@@ -158,7 +170,7 @@ export default function DropDownDocs({
           <DropdownMenuItem
             className="text-xl"
             variant="destructive"
-            onSelect={(e) => setDeleteOpen(true)}
+            onSelect={() => setDeleteOpen(true)}
           >
             <Trash2 />
             Delete

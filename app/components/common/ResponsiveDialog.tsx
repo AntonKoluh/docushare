@@ -7,7 +7,6 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "~/components/ui/drawer";
 import {
   Dialog,
@@ -15,12 +14,11 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "~/components/ui/dialog";
 import { Button } from "../ui/button";
+import React from "react";
 
 type incomingProps = {
-  id: number;
   title: string | null;
   description: string | null;
   isOpen: boolean;
@@ -29,7 +27,6 @@ type incomingProps = {
 };
 
 export function ResponsiveDialog({
-  id,
   title,
   description,
   isOpen,

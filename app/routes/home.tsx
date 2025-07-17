@@ -1,29 +1,20 @@
 import Welcome from "~/components/welcome/welcome";
-import type { Route } from "./+types/home";
 import Navbar from "~/components/navbar/navbar";
 import { useEffect, useState } from "react";
 import type { userType } from "~/types/accountType";
-import useGetData from "~/hooks/useGetData";
-import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import DocList from "~/components/DocsList/DocList";
 
-export function meta({}: Route.MetaArgs) {
+export function meta() {
   return [
     { title: "Welcome" },
     { name: "description", content: "Easy to share notes!" },
   ];
 }
 
-export default function Home() {
-  const navigate = useNavigate();
+const Home = () => {
   const [user, setUser] = useState<userType | null>(null);
   const [loading, setLoading] = useState(true);
-  const getData = useGetData();
-
-  const handleCheckLogin = async () => {
-    const result = await getData("test/");
-  };
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -55,4 +46,6 @@ export default function Home() {
       {user ? <DocList /> : <Welcome />}
     </div>
   );
-}
+};
+
+export default Home;

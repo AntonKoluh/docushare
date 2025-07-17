@@ -9,11 +9,12 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { generateUID } from "~/helpers/helpers";
+import React from "react";
 
 type incomingProps = {
-  setDownloadOpen: (arg0: boolean) => void;
+  setDownloadOpen: React.Dispatch<React.SetStateAction<boolean>>;
   closeSocket: () => void;
-  setDeleteOpen: (arg0: boolean) => void;
+  setDeleteOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function DropDownFile({
