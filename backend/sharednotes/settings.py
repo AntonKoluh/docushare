@@ -29,14 +29,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if os.getenv('VITE_DEBUG') == 'True' else False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'ec2-13-49-0-196.eu-north-1.compute.amazonaws.com',
+    'seal-popular-alpaca.ngrok-free.app',
+    'api.docushare.in.net',
+    'docushare.in.net',
+    '13.49.0.196', 
+]
 
+USE_X_FORWARDED_HOST = True if os.getenv('VITE_DEBUG') == 'True' else False
 
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -47,6 +57,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'channels',
+    'sharednotes.api.apps.ApiConfig',
+    'docs',
+    'live_share',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +79,9 @@ ROOT_URLCONF = "sharednotes.urls"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # your frontend URL
     "http://127.0.0.1:5173",
+    "https://staging.d14znvuary829h.amplifyapp.com",
+    "https://docushare.in.net",
+    "https://api.docushare.in.net",
     # add others as needed
 ]
 
@@ -90,13 +107,17 @@ TEMPLATES = [
 WSGI_APPLICATION = "sharednotes.wsgi.application"
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',  # or your default
+    ],
+    'UNAUTHENTICATED_USER': None  # ← prevents token validation errors
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=10),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=3),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': True,
 }
@@ -111,8 +132,12 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
-    }
+    },
 }
+
+MONGO_DATABASE_NAME = 'shared_notes'
+MONGO_HOST = os.getenv('MONGO_IP')
+MONGO_PORT = 27017
 
 
 # Password validation
@@ -155,3 +180,14 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+ASGI_APPLICATION = "sharednotes.asgi.application"
+redis_ip = os.getenv('REDIS_DEBUG') if os.getenv('VITE_DEBUG') == 'True' else os.getenv('REDIS_IP')
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(redis_ip, 6379)],
+        },
+    },
+}

@@ -7,6 +7,13 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from ..services.google_auth import GoogleAuthService
 import logging
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
+import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -19,17 +26,32 @@ def google_login(request):
     """
     try:
         # Get the access token from request
-        google_token = request.data.get('access_token')
+        token_url = "https://oauth2.googleapis.com/token"
+        access_token = request.data.get('access_token')
+        redirect_uri = "http://localhost:5173" if os.getenv('VITE_DEBUG') == "True" else os.getenv('VITE_BACKEND_URL')
+        print(redirect_uri)
+        payload = {
+            "code": access_token,
+            "client_id": os.getenv("GOOGLE_ID"),
+            "client_secret": os.getenv("GOOGLE_SECRET"),
+            "redirect_uri": f"{redirect_uri}/auth/callback",
+            "grant_type": "authorization_code",
+        }
+        response = requests.post(token_url, data=payload)
         
-        if not google_token:
+        if response.status_code != 200:
+            logger.error(f"Token verification failed: {response.text}")
             return Response(
-                {'error': 'Google access token is required'}, 
-                status=status.HTTP_400_BAD_REQUEST
+                {'error': 'Invalid Google token'}, 
+                status=status.HTTP_401_UNAUTHORIZED
             )
         
-        # Verify Google token and get user info
-        google_auth_service = GoogleAuthService()
-        user_data = google_auth_service.verify_google_token(google_token)
+        token_info = response.json()
+        user_data = id_token.verify_oauth2_token(
+        token_info['id_token'],
+        google_requests.Request(),
+        os.getenv("GOOGLE_ID")
+        )
         
         if not user_data:
             return Response(
@@ -45,7 +67,7 @@ def google_login(request):
             )
         
         # Get or create user
-        user = google_auth_service.get_or_create_user(user_data)
+        user = GoogleAuthService.get_or_create_user(user_data)
         
         if not user:
             return Response(

@@ -1,16 +1,26 @@
-"""
-ASGI config for sharednotes project.
+"""ASGI config for the sharednotes Django project.
 
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
+This file exposes the ASGI application as a module-level variable named `application`.
 """
 
 import os
-
+from channels.auth import AuthMiddlewareStack
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.security.websocket import AllowedHostsOriginValidator
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sharednotes.settings")
 
-application = get_asgi_application()
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sharednotes.settings")
+django_asgi_app = get_asgi_application()
+
+from live_share.routing import websocket_urlpatterns
+
+
+application = ProtocolTypeRouter(
+    {
+        "http": django_asgi_app,
+        "websocket": AuthMiddlewareStack(URLRouter(websocket_urlpatterns)
+        ),
+    }
+)
+

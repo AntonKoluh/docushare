@@ -1,0 +1,73 @@
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+}
+.spinner_container {
+  align-items: center;
+  height: 64px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.spinner1 {
+  width: 80%;
+  height: 12px;
+  background-color: gray;
+  border-radius: 10px;
+  opacity: 0.7;
+  animation: 3s infinite ease-in-out spinner;
+}
+
+.spinner2 {
+  width: 80%;
+  height: 12px;
+  background-color: gray;
+  border-radius: 10px;
+  opacity: 0.7;
+  animation: 3s infinite ease-in-out spinner;
+  animation-delay: 200ms;
+}
+.spinner3 {
+  width: 80%;
+  height: 12px;
+  background-color: gray;
+  border-radius: 10px;
+  opacity: 0.7;
+  animation: 3s infinite ease-in-out spinner;
+  animation-delay: 300ms;
+}
+.spinner4 {
+  width: 80%;
+  height: 12px;
+  background-color: gray;
+  border-radius: 10px;
+  opacity: 0.7;
+  animation: 3s infinite ease-in-out spinner;
+  animation-delay: 400ms;
+}
+.spinner5 {
+  width: 80%;
+  height: 12px;
+  background-color: gray;
+  border-radius: 10px;
+  opacity: 0.7;
+  animation: 3s infinite ease-in-out spinner;
+  animation-delay: 500ms;
+}
+
+@keyframes spinner {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
