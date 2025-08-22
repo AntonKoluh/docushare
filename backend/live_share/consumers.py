@@ -6,16 +6,21 @@ from datetime import datetime, timedelta
 import redis
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-from live_share.models import MongoNote
-from docs.models import DocEntry
+import os
+from dotenv import load_dotenv
 
 
-redis_client = redis.StrictRedis(host='192.168.0.110', port=6379, db=0)
+load_dotenv()
+redis_ip = os.getenv('REDIS_DEBUG') if os.getenv('VITE_DEBUG') == 'True' else os.getenv('REDIS_IP')
+
+redis_client = redis.StrictRedis(host=redis_ip, port=6379, db=0)
 
 def save_to_dbs(data, doc_id, username):
     """
     Saves changes from redis to Mongo and updates filename in doc_entry
     """
+    from docs.models import DocEntry
+    from live_share.models import MongoNote
     MongoNote.objects(doc_id=doc_id).update_one( # pylint: disable=no-member
         set__content=data['content'],
         upsert=True
@@ -87,6 +92,7 @@ class ChatConsumer(WebsocketConsumer):
 
     def disconnect(self, code=None):
         # Leave room group
+        
         latest_msg = get_latest_redis(self.doc_name)
         user_list = remove_user_connection(self.doc_name, self.username)
         async_to_sync(self.channel_layer.group_send)(
@@ -109,11 +115,11 @@ class ChatConsumer(WebsocketConsumer):
     def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
         msg_type = data.get("type")
+        now = datetime.now()
 
         if msg_type == "init":
             # Save username for later use
             self.username = data.get("username") # pylint: disable=attribute-defined-outside-init
-            print(self.username)
             user_list = add_user_connection(self.doc_name, self.username)
             async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
@@ -123,9 +129,19 @@ class ChatConsumer(WebsocketConsumer):
             }
         )
             return
-
-        if msg_type != "msg":
-            return  # Ignore unknown types
+        if msg_type == "disconnect":
+            print(self.doc_name)
+            latest_msg = get_latest_redis(self.doc_name) if get_latest_redis(self.doc_name) else {}
+            if latest_msg.get("updated") and datetime.fromisoformat(latest_msg.get("updated")) < now:
+                latest_msg.update({
+                    "name": data["name"],
+                    "content": data["content"],
+                    "editedBy": self.username,
+                    "updated": now.isoformat(),
+                })
+                save_to_dbs(latest_msg, self.doc_name, self.username)
+                print(self.doc_name)
+                return
 
         # Extract message data
         doc_id = data["id"]
@@ -133,14 +149,14 @@ class ChatConsumer(WebsocketConsumer):
         content = data["content"]
         redis_key = f"latest_doc{doc_id}"
 
-        now = datetime.now()
 
         # Try to load the last message from Redis
         latest_msg = get_latest_redis(self.doc_name) if get_latest_redis(self.doc_name) else {}
         latest_msg.update({
             "name": name,
             "content": content,
-            "editedBy": self.username
+            "editedBy": self.username,
+            "updated": now.isoformat()
         })
 
         last_edit_time = latest_msg.get("time")

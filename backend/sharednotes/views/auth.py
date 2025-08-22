@@ -28,12 +28,13 @@ def google_login(request):
         # Get the access token from request
         token_url = "https://oauth2.googleapis.com/token"
         access_token = request.data.get('access_token')
-
+        redirect_uri = "http://localhost:5173" if os.getenv('VITE_DEBUG') == "True" else os.getenv('VITE_BACKEND_URL')
+        print(redirect_uri)
         payload = {
             "code": access_token,
             "client_id": os.getenv("GOOGLE_ID"),
             "client_secret": os.getenv("GOOGLE_SECRET"),
-            "redirect_uri": "http://localhost:5173/auth/callback",
+            "redirect_uri": f"{redirect_uri}/auth/callback",
             "grant_type": "authorization_code",
         }
         response = requests.post(token_url, data=payload)

@@ -17,6 +17,7 @@ import SearchList from "./components/search";
 const DocList = () => {
   const getData = useGetData();
   const [data, setData] = useState<FileListType[] | null>(null);
+  const [originalData, setOriginalData] = useState<FileListType[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const currentUser = JSON.parse(localStorage.getItem("user")!).email;
@@ -26,20 +27,33 @@ const DocList = () => {
     const getListData = async () => {
       const result = await getData("docs/");
       setData(result.data);
+      setOriginalData(result.data)
       setIsLoading(false);
     };
     getListData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (data && data.length > 0) {
-    const reordered_list = [...data].sort((a, b) => {
-      const aHas = a.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const bHas = b.name.toLowerCase().includes(searchTerm.toLowerCase());
+  // useEffect(() => {
+  //   if (data && data.length > 0) {
+  //   const reordered_list = [...data].sort((a, b) => {
+  //     const aHas = a.name.toLowerCase().includes(searchTerm.toLowerCase());
+  //     const bHas = b.name.toLowerCase().includes(searchTerm.toLowerCase());
 
-      if (aHas == bHas) return 0;
-      return aHas ? -1 : 1;
+  //     if (aHas == bHas) return 0;
+  //     return aHas ? -1 : 1;
+  //   })
+  //   setData(reordered_list)
+  //   }
+  // }, [searchTerm])
+
+    useEffect(() => {
+    if (searchTerm === "") {
+      setData(originalData)
+    }
+    if (data && data.length > 0) {
+    const reordered_list = originalData!.filter((obj) => {
+      return obj.name.toLowerCase().includes(searchTerm.toLowerCase())
     })
     setData(reordered_list)
     }
@@ -52,7 +66,7 @@ const DocList = () => {
           <Link to={"/edit/" + newUID}>
             <NewFile />
           </Link>
-          <span className="absolute left-1/2 -translate-x-1/2"><SearchList setSearch={setSearchTerm}/></span>
+          <span className="absolute left-1/2 -translate-x-1/2"><SearchList searchTerm={searchTerm} setSearch={setSearchTerm}/></span>
         </div>
         {/* <SearchList /> */}
       </div>

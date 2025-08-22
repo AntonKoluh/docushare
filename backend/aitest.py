@@ -1,9 +1,20 @@
-from openai import OpenAI
-client = OpenAI()
+import requests
+import json
 
-response = client.responses.create(
-    model="gpt-4-mini",
-    input="Write a one-sentence bedtime story about a unicorn."
-)
+url = r"http://192.168.0.133:11434/api/generate"
+req = {
+  "model": "phi3:mini",
+  "prompt": "Why is the sky blue?"
+}
 
-print(response.output_text)
+full = ""
+
+with requests.post(url, json=req, stream=True) as r:
+    r.raise_for_status()
+    for chunk in r.iter_content(chunk_size=None):
+        if chunk:
+            data = json.loads(chunk.decode('utf-8'))
+            full += data['response']
+            print (full)
+
+

@@ -29,15 +29,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True if os.getenv('VITE_DEBUG') == 'True' else False
 
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'ec2-13-49-0-196.eu-north-1.compute.amazonaws.com',
+    'seal-popular-alpaca.ngrok-free.app',
+    'api.docushare.in.net',
+    'docushare.in.net',
+    '13.49.0.196', 
 ]
 
-USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_HOST = True if os.getenv('VITE_DEBUG') == 'True' else False
 
 # Application definition
 
@@ -53,6 +57,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'channels',
     'sharednotes.api.apps.ApiConfig',
     'docs',
     'live_share',
@@ -75,6 +80,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # your frontend URL
     "http://127.0.0.1:5173",
     "https://staging.d14znvuary829h.amplifyapp.com",
+    "https://docushare.in.net",
+    "https://api.docushare.in.net",
     # add others as needed
 ]
 
@@ -129,7 +136,7 @@ DATABASES = {
 }
 
 MONGO_DATABASE_NAME = 'shared_notes'
-MONGO_HOST = 'localhost'
+MONGO_HOST = os.getenv('MONGO_IP')
 MONGO_PORT = 27017
 
 
@@ -175,11 +182,12 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 ASGI_APPLICATION = "sharednotes.asgi.application"
+redis_ip = os.getenv('REDIS_DEBUG') if os.getenv('VITE_DEBUG') == 'True' else os.getenv('REDIS_IP')
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(os.getenv('REDIS_IP'), 6379)],
+            "hosts": [(redis_ip, 6379)],
         },
     },
 }

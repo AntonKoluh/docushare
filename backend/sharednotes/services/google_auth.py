@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 
-load_dotenv
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -17,16 +17,26 @@ class GoogleAuthService:
         """
         Verify Google access token and return user info
         """
+        print("=" * 50)
+        print("GOOGLE AUTH DEBUG - START")
+        print(f"Received token: {access_token[:20]}...")
+        print("=" * 50)
+        print("HELLLLOOOO")
         try:
             token_url = "https://oauth2.googleapis.com/token"
-
+            print(access_token)
             payload = {
                 "code": access_token,
                 "client_id": os.getenv("GOOGLE_ID"),
                 "client_secret": os.getenv("GOOGLE_SECRET"),
-                "redirect_uri": "http://localhost:5173/auth/callback",
+                "redirect_uri": "https://docushare.in.net/auth/callback",
                 "grant_type": "authorization_code",
             }
+
+            print("Submitting payload to Google token endpoint:")
+            for k, v in payload.items():
+                logger.debug(f"{k} = {v}")
+
             response = requests.post(token_url, data=payload)
             
             if response.status_code != 200:

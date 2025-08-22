@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "sed -i 's/^VITE_DEBUG=.*/VITE_DEBUG=True/' .env && vite",
+    "dev": "sed -i 's/^VITE_DEBUG=.*/VITE_DEBUG=True/' ../.env && vite",
     "build": "tsc -b && vite build",
-    "buildprod": "sed -i 's/^VITE_DEBUG=.*/VITE_DEBUG=False/' .env && vite build'",
+    "buildprod": "sed -i 's/^VITE_DEBUG=.*/VITE_DEBUG=False/' ../.env && vite build'",
     "lint": "eslint .",
     "preview": "vite preview"
   },

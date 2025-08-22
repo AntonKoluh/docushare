@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.db import models
 from django.contrib.auth import get_user_model
 from live_share.models import MongoNote
+from django.conf import settings
 
 
 # Create your models here.
@@ -12,10 +13,10 @@ class DocEntry(models.Model):
     """
     Doc entry main table
     """
-    User = get_user_model()
+    
     uid = models.CharField(max_length=20)
     name = models.CharField(max_length=50)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     doc = models.CharField(max_length=20)
     public_access = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -87,9 +88,8 @@ class Collaborators(models.Model):
     """
     one-many relation with Doc_entry, contains a list of collaboratos on a document
     """
-    User = get_user_model()
     doc_entry = models.ForeignKey(DocEntry, on_delete=models.CASCADE)
-    collaborator = models.ForeignKey(User, on_delete=models.CASCADE)
+    collaborator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     auth = models.IntegerField(default=0)
 
     @staticmethod

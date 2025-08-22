@@ -5,11 +5,13 @@ import os
 import tempfile
 from time import sleep
 import pypandoc
+import requests
+import json
 from django.db import IntegrityError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.http import FileResponse, HttpResponseBadRequest
+from django.http import FileResponse, HttpResponseBadRequest, StreamingHttpResponse
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -18,7 +20,7 @@ from docs.models import DocEntry, Collaborators
 from docs.serializer import DocEntrySerializer
 from docs.serializer import CollaboratorsSerializer
 from live_share.models import MongoNote
-from .utils import authenticate_login
+from .utils import authenticate_login, is_server_online
 
 
 @api_view(['POST'])
@@ -226,3 +228,77 @@ def export_rtf_string_to_pdf(request, file_format, uid):
                     os.remove(path)
                 except PermissionError:
                     print("Bad permission")
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def ai_health(request):
+    ai_url = os.getenv('AI_API_URL_DEBUG') if os.getenv("VITE_DEBUG") == "True" else os.getenv('AI_API_URL')
+    ai_health = is_server_online(ai_url)
+    return Response({"success": True if ai_health else False})
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ai_sum(request):
+    """
+    AI Summery of a document, sends request to ollama.
+    """
+    doc_uid = request.data['uid']
+    user = request.user.username
+    mongo_doc = MongoNote.objects.filter(doc_id=doc_uid).first()
+    user_obj = User.objects.filter(username=user).first()
+    doc = DocEntry.objects.filter(uid=doc_uid).first()
+    collab_check = Collaborators.objects.filter(doc_entry=doc,
+                                               collaborator__username = user).first()
+    if len(mongo_doc.content) < 10:
+        return Response({"success": False, "msg": "Cannot sum such a short doc"})
+    if not doc:
+        return Response({"success": False, "msg": "Cant find requested doc"})
+    if not doc.public_access:
+        if not user:
+            print(user, doc.public_access, "AAAAA")
+            return Response({"success": False, "msg": "You are not eligeble to view this doc"})
+        if collab_check is None and doc.owner != user_obj:
+            print(collab_check, doc.owner != user_obj)
+            return Response({"success": False, "msg": "You are not eligeble to view this doc"})
+    if mongo_doc.ai_sum and request.data['use_cache']:
+        return Response({"success": True, "msg":mongo_doc.ai_sum})
+    
+    base_url = os.getenv('AI_API_URL_DEBUG') if os.getenv("VITE_DEBUG") == "True" else os.getenv('AI_API_URL')
+    url = base_url + "/api/generate"
+
+    if not is_server_online(base_url):
+        return Response({"success": False, "msg":"Failed to connect to AI server"})
+
+    req = {
+    "model": "llama3.2:1b",
+    "prompt": (
+            "Summarize the following text in 3 sentences points, "
+            "Do not repeat this instructions in your response, "
+    "each no more than 10 words:\n\n" + mongo_doc.content
+    ),
+    "stream": True,
+    "options": {
+      "num_gpu": 0,
+      "num_thread": 4,
+      "num_ctx": 1024,
+      "num_batch": 16,
+      "temperature": 0.2,
+      "repeat_penalty": 2
+    }
+    }
+    def event_stream():
+        fulldata = ""
+        with requests.post(url, json=req, stream=True) as r:
+            r.raise_for_status()
+            for chunk in r.iter_lines(chunk_size=None):
+                if chunk:
+                    data = json.loads(chunk.decode('utf-8'))
+                    if "response" in data:
+                        fulldata += data["response"]
+                        yield json.dumps({"success": True, "msg": data["response"]}) + "\n"
+        print(fulldata)
+        mongo_doc.ai_sum = fulldata
+        mongo_doc.save()
+    return StreamingHttpResponse(event_stream(), content_type="application/x-ndjson")
