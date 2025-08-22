@@ -20,6 +20,7 @@ import type { FileListType } from "~/types/accountType";
 import DownloadDialog from "./DownloadDialog";
 import PublicViewingDialog from "./PublicViewingDialog";
 import React from "react";
+import AiHero from "@/components/ai/AiHero";
 
 type incomingProps = {
   id: number;
@@ -41,15 +42,15 @@ export default function DropDownDocs({
   setData,
 }: incomingProps) {
   let displayName = name;
-  if (name.length > 7) {
-    displayName = displayName.slice(0, 7) + "...";
+  if (name.length > 14) {
+    displayName = displayName.slice(0, 14) + "...";
   }
   const [shareOpen, setShareOpen] = useState(false);
   const [publicOpen, setPublicOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
   const [downloadOpen, setDownloadOpen] = useState(false);
   const disableShare = displayOwner === "Me" ? false : true;
-  console.log(data);
   return (
     <>
       {/* Share Dialog */}
@@ -103,6 +104,15 @@ export default function DropDownDocs({
       >
         <DownloadDialog uid={uid} name={name} />
       </ResponsiveDialog>
+      {/* Summerize Docs (AI) */}
+      <ResponsiveDialog
+        title={name + " Ai"}
+        description={null}
+        isOpen={aiOpen}
+        setIsOpen={setAiOpen}
+      >
+        <AiHero uid={uid}/>
+      </ResponsiveDialog>
       <DropdownMenu aria-hidden="false">
         <DropdownMenuTrigger asChild>
           <span className="flex flex-col w-10 h-10 justify-center items-center gap-1 hover:bg-(--acc-c) rounded-full">
@@ -115,7 +125,7 @@ export default function DropDownDocs({
           <HoverCard>
             <HoverCardTrigger>
               <DropdownMenuLabel className="text-2xl w-full flex flex-row justify-start items-center gap-3">
-                <File />
+                <File className="h-4 w-4"/>
                 {displayName}
               </DropdownMenuLabel>
             </HoverCardTrigger>
@@ -162,7 +172,7 @@ export default function DropDownDocs({
           </HoverCard>
 
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-xl text-purple-700">
+          <DropdownMenuItem className="text-xl text-purple-700" onSelect={() => setAiOpen(true)}>
             <Share />
             Summarize
           </DropdownMenuItem>

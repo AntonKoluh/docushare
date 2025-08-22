@@ -33,7 +33,6 @@ type incomingProps = {
 const EditorNavBar = ({
   doc,
   socketStatus,
-  updateData,
   setUpdateData,
   onlineUsers,
   closeSocket,
@@ -51,12 +50,12 @@ const EditorNavBar = ({
   }, [doc?.title]);
 
   function handleOnTitleChange() {
-    const newData = {
-      ...updateData,
-      title: fileNameRef.current?.value || "",
-      flag: true,
-    };
-    setUpdateData(newData);
+  const title = fileNameRef.current?.value || "";
+  setUpdateData(prevData => ({
+    ...prevData,
+    title,
+    flag: true,
+  }));
   }
 
   return (
@@ -102,7 +101,7 @@ const EditorNavBar = ({
             <HoverCard>
               <HoverCardTrigger>
                 <div
-                  className={`w-3 h-3 rounded-full ${
+                  className={`w-2 h-2 rounded-full ${
                     socketStatus === 0
                       ? "bg-yellow-500"
                       : socketStatus === 1
@@ -124,12 +123,12 @@ const EditorNavBar = ({
               type="text"
               name="fileName"
               id="fileName"
-              className="focus:outline-0 mr-auto"
+              className="focus:outline-0 mr-auto text-lg! w-full"
               onChange={handleOnTitleChange}
               readOnly={doc.access === 0 ? true : false}
             />
             {doc.access != 1 ? (
-              <p className="text-gray-700! text-center! w-full text-lg!">
+              <p className="text-gray-700! text-center! w-full text-md!">
                 (Readonly)
               </p>
             ) : null}
@@ -137,7 +136,7 @@ const EditorNavBar = ({
               <p className="text-black! mr-2">Viewing:</p>
               {onlineUsers.map((user) => (
                 <div
-                  className={`rounded-full bg-green-700 h-10 w-10 text-center flex justify-center items-center border-2 border-black cursor-default ${
+                  className={`rounded-full bg-green-700 h-6 w-6 text-center flex justify-center items-center border-2 border-black cursor-default text-sm! text-white font-semibold ${
                     user.startsWith("Guest")
                       ? "bg-yellow-900 text-gray-300"
                       : ""
@@ -167,13 +166,13 @@ const EditorNavBar = ({
                 <DropDownSocial setShareOpen={setShareOpen} />
               </li>
               <li className="text-xl px-2 py-1  cursor-pointer font-bold">
-                <DropDownAI />
+                <DropDownAI doc_name={doc.title!} uid={doc.uid!}/>
               </li>
               <li className="bg-(--bg-acc-c) text-xl px-2 py-1 rounded-sm mr-auto text-(--text-c) font-bold hover:bg-(--bg-acc-c) hover:shadow-sm hover:shadow-amber-500 transition-all cursor-pointer">
                 <Link
                   to="/"
                   onClick={closeSocket}
-                  className="flex flex-row justify-center items-center gap-2"
+                  className="flex flex-row justify-center items-center gap-2 text-sm!"
                 >
                   <MoveLeft />
                   Back

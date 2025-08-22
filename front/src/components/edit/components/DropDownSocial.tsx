@@ -16,12 +16,12 @@ type incomingProps = {
 export default function DropDownSocial({ setShareOpen }: incomingProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="hover:bg-(--bg-acc-c) hover:text-(--text-c) cursor-pointer py-1 px-2 rounded-sm font-bold select-none">
+      <DropdownMenuTrigger className="hover:bg-(--bg-acc-c) hover:text-(--text-c) cursor-pointer py-1 px-2 rounded-sm font-bold select-none text-sm!">
         Social
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel className="text-2xl w-full flex flex-row justify-start items-center gap-3">
-          <Activity />
+        <DropdownMenuLabel className="text-sm font-bold w-full flex flex-row justify-start items-center gap-3">
+          <Activity className="w-4 h-4"/>
           Social
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

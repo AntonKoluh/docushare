@@ -12,11 +12,13 @@ import DropDownDocs from "./components/DropDownDocs";
 import SpinnerDocList from "../ui/spinners/SpinnerDocList";
 import { generateUID } from "~/helpers/helpers";
 import { FileMinus, Plus } from "lucide-react";
+import SearchList from "./components/search";
 
 const DocList = () => {
   const getData = useGetData();
   const [data, setData] = useState<FileListType[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
   const currentUser = JSON.parse(localStorage.getItem("user")!).email;
   const newUID = generateUID();
 
@@ -30,13 +32,27 @@ const DocList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (data && data.length > 0) {
+    const reordered_list = [...data].sort((a, b) => {
+      const aHas = a.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const bHas = b.name.toLowerCase().includes(searchTerm.toLowerCase());
+
+      if (aHas == bHas) return 0;
+      return aHas ? -1 : 1;
+    })
+    setData(reordered_list)
+    }
+  }, [searchTerm])
+
   return (
     <div className="max-w-7xl mx-auto w-full h-full pt-10">
-      <div className="flex flex-row gap-50 justify-start items-center">
-        <div className="flex flex-row justify-center items-center gap-5">
+      <div className="flex flex-row gap-50 justify-start items-center w-full">
+        <div className="flex flex-row justify-left items-center gap-5 w-full relative">
           <Link to={"/edit/" + newUID}>
             <NewFile />
           </Link>
+          <span className="absolute left-1/2 -translate-x-1/2"><SearchList setSearch={setSearchTerm}/></span>
         </div>
         {/* <SearchList /> */}
       </div>
@@ -66,16 +82,16 @@ const DocList = () => {
               obj.owner.username === currentUser ? "Me" : obj.owner.username;
             return (
               <Link to={"/edit/" + obj.uid} key={obj.id}>
-                <div className=" cursor-pointer flex flex-row justify-center items-center w-full border-b-1 h-14 border-b-gray-400 px-2 hover:bg-(--text-acc-c)">
-                  <p className="flex-6 w-full text-[1.3rem]! flex flex-row justify-start items-center gap-2">
+                <div className=" cursor-pointer flex flex-row justify-center items-center w-full border-b-1 h-10 border-b-gray-400 px-2 hover:bg-(--text-acc-c)">
+                  <p className="flex-6 w-full text-md! flex flex-row justify-start items-center gap-2">
                     <FileMinus /> <span className="pt-1">{obj.name}</span>
                   </p>
-                  <p className="flex-2 w-full text-center text-[1.3rem]! pt-1">
+                  <p className="flex-2 w-full text-center text-md! pt-1">
                     {displayOwner}
                   </p>
                   <HoverCard>
                     <HoverCardTrigger className="w-full flex-2" asChild>
-                      <p className="flex-2 w-full text-center text-[1.3rem]! pt-1">
+                      <p className="flex-2 w-full text-center text-md! pt-1">
                         {obj.updated_at.slice(0, 10)}
                       </p>
                     </HoverCardTrigger>

@@ -65,7 +65,7 @@ const CollabDisplay = ({
     <HoverCard key={id}>
       <HoverCardTrigger>
         <div
-          className={`p-2 text-xl rounded-full w-12 h-12 flex justify-center items-center cursor-pointer font-bold ${
+          className={`p-2 text-sm rounded-full w-8 h-8 flex justify-center items-center cursor-pointer font-bold ${
             auth === 1 ? "bg-green-400" : "bg-red-400"
           }`}
         >

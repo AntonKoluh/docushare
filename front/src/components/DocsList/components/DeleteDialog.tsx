@@ -26,7 +26,6 @@ export default function DeleteDialog({
       const index = data?.findIndex((obj) => obj.id === id);
       const newList = [...data];
       newList.splice(index, 1);
-      console.log(newList);
       setData(newList);
     } else {
       navigate("/");

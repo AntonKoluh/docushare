@@ -1,0 +1,34 @@
+************* Module docs
+docs\__init__.py:1:0: E5110: Django was not configured. For more information run pylint --load-plugins=pylint_django --help-msg=django-not-configured (django-not-configured)
+************* Module docs.migrations.0001_initial
+docs\migrations\0001_initial.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+docs\migrations\0001_initial.py:1:0: C0103: Module name "0001_initial" doesn't conform to snake_case naming style (invalid-name)
+docs\migrations\0001_initial.py:8:0: C0115: Missing class docstring (missing-class-docstring)
+************* Module docs.migrations.0002_docentry_name
+docs\migrations\0002_docentry_name.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+docs\migrations\0002_docentry_name.py:1:0: C0103: Module name "0002_docentry_name" doesn't conform to snake_case naming style (invalid-name)
+docs\migrations\0002_docentry_name.py:6:0: C0115: Missing class docstring (missing-class-docstring)
+************* Module docs.migrations.0003_docentry_publicaccess
+docs\migrations\0003_docentry_publicaccess.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+docs\migrations\0003_docentry_publicaccess.py:1:0: C0103: Module name "0003_docentry_publicaccess" doesn't conform to snake_case naming style (invalid-name)
+docs\migrations\0003_docentry_publicaccess.py:6:0: C0115: Missing class docstring (missing-class-docstring)
+************* Module docs.migrations.0004_rename_publicaccess_docentry_public_access
+docs\migrations\0004_rename_publicaccess_docentry_public_access.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+docs\migrations\0004_rename_publicaccess_docentry_public_access.py:1:0: C0103: Module name "0004_rename_publicaccess_docentry_public_access" doesn't conform to snake_case naming style (invalid-name)
+docs\migrations\0004_rename_publicaccess_docentry_public_access.py:6:0: C0115: Missing class docstring (missing-class-docstring)
+************* Module docs.migrations.0005_docentry_uid
+docs\migrations\0005_docentry_uid.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+docs\migrations\0005_docentry_uid.py:1:0: C0103: Module name "0005_docentry_uid" doesn't conform to snake_case naming style (invalid-name)
+docs\migrations\0005_docentry_uid.py:6:0: C0115: Missing class docstring (missing-class-docstring)
+************* Module docs.migrations.0006_alter_docentry_doc
+docs\migrations\0006_alter_docentry_doc.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+docs\migrations\0006_alter_docentry_doc.py:1:0: C0103: Module name "0006_alter_docentry_doc" doesn't conform to snake_case naming style (invalid-name)
+docs\migrations\0006_alter_docentry_doc.py:6:0: C0115: Missing class docstring (missing-class-docstring)
+************* Module docs.migrations.0007_docentry_last_modified_by
+docs\migrations\0007_docentry_last_modified_by.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+docs\migrations\0007_docentry_last_modified_by.py:1:0: C0103: Module name "0007_docentry_last_modified_by" doesn't conform to snake_case naming style (invalid-name)
+docs\migrations\0007_docentry_last_modified_by.py:6:0: C0115: Missing class docstring (missing-class-docstring)
+
+------------------------------------------------------------------
+Your code has been rated at 8.17/10 (previous run: 8.17/10, +0.00)
+

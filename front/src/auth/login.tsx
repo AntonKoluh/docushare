@@ -5,8 +5,9 @@ type incomingProps = {
 export default function Login({ text }: incomingProps) {
   const handleRedirectLogin = () => {
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-    const redirectUri = `${window.location.origin}/auth/callback`;
+    const redirectUri = `${window.location.href}auth/callback`;
     const scope = "openid email profile";
+    console.log("redirect URI: ", redirectUri)
 
     const authUrl =
       `https://accounts.google.com/o/oauth2/v2/auth` +

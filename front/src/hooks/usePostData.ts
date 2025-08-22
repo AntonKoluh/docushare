@@ -4,7 +4,7 @@ import { useCallback } from "react";
 
 export default function usePostData() {
   const navigate = useNavigate();
-  const baseUrl = import.meta.env.VITE_BACKEND_URL;
+  const baseUrl = import.meta.env.VITE_DEBUG === "True" ? import.meta.env.VITE_BACKEND_URL_DEBUG : import.meta.env.VITE_BACKEND_URL;
 
   const authFetch = useCallback(
     async (endpoint: string, data: any, auth = true) => {

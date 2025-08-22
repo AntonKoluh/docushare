@@ -66,8 +66,8 @@ const ShareForm = ({ id, setShareOpen }: incomingProps) => {
       <input
         {...register("email")}
         type="text"
-        placeholder="Email"
-        className="text-2xl! w-full bg-(--bg-c)! p-1 rounded-sm text-(--bg-acc-c) border-2 border-(--bg-acc-c)"
+        placeholder="Add new collaborator by email"
+        className="text-sm! w-full bg-gray-200! p-1 rounded-sm text-(--bg-acc-c) border-2 border-(--bg-acc-c)"
       />
       {errors.email && (
         <div className="text-red-500">{errors.email.message}</div>
@@ -84,8 +84,8 @@ const ShareForm = ({ id, setShareOpen }: incomingProps) => {
           />
         </div>
       )}
-      <div className="bg-(--bg-c) border-2 border-gray-400 w-full px-4 py-2">
-        <p className="text-black! mb-2">Current collaborators:</p>
+      <div className="bg-gray-200 border-2 border-gray-400 w-full px-4 py-2 rounded-sm">
+        <p className="text-black! mb-2 text-sm!">Current collaborators:</p>
         <div className="flex flex-row w-full justify-start items-center gap-2">
           {isLoading ? (
             <SpinnerCollaborators />
@@ -107,11 +107,11 @@ const ShareForm = ({ id, setShareOpen }: incomingProps) => {
           )}
         </div>
       </div>
-      <div className="flex flex-row justify-center items-center gap-5">
+      <div className="flex flex-row justify-center items-center gap-3">
         <button
           disabled={isSubmitting}
           type="submit"
-          className={`bg-gray-100 p-3 rounded-md hover:shadow-purple-500 hover:shadow-2xl hover:bg-gray-200 cursor-pointer border-2 ${
+          className={`bg-gray-100 p-2 rounded-md hover:shadow-purple-500 hover:shadow-2xl hover:bg-gray-200 cursor-pointer border-2 text-sm! ${
             isSubmitting
               ? "cursor-wait! bg-gray-800 hover:bg-gray-800 text-white shadow-2xl shadow-black"
               : ""
@@ -124,7 +124,7 @@ const ShareForm = ({ id, setShareOpen }: incomingProps) => {
             e.preventDefault();
             setShareOpen(false);
           }}
-          className="bg-red-300 p-3 rounded-md hover:shadow-red-600 hover:shadow-2xl hover:bg-red-600 cursor-pointer border-2"
+          className="bg-red-300 p-2 rounded-md hover:shadow-red-600 hover:shadow-2xl hover:bg-red-600 cursor-pointer border-2 text-sm!"
         >
           Cancel
         </button>

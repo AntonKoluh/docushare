@@ -44,7 +44,7 @@ const LoginModal = ({ text }: incomingProps) => {
       </ResponsiveDialog>
       <Button
         onClick={() => setLoginOpen(true)}
-        className="text-2xl py-5 hover:shadow-lg border-4 border-black shadow-amber-500 hover:bg-gray-800 cursor-pointer"
+        className="text-lg py-3 hover:shadow-lg border-4 border-black shadow-amber-500 hover:bg-gray-800 cursor-pointer"
       >
         {text}
       </Button>

@@ -16,6 +16,7 @@ type incomingProps = {
 };
 
 export default function DownloadDialog({ uid, name }: incomingProps) {
+  const baseUrl = import.meta.env.VITE_BACKEND_URL;
   const [selected, setSelected] = useState<string>("");
   const [downloadLoading, setDownloadLoading] = useState(false);
   function handleOnDownload() {
@@ -31,7 +32,7 @@ export default function DownloadDialog({ uid, name }: incomingProps) {
       ? "Bearer " + localStorage.getItem("access")
       : "";
     setDownloadLoading(true);
-    fetch(`http://localhost:8000/api/docs/download/${format}/${uid}`, {
+    fetch(`${baseUrl}/api/docs/download/${format}/${uid}`, {
       method: "GET",
       headers: {
         Authorization: token, // if using JWT

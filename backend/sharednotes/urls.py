@@ -23,7 +23,7 @@ from rest_framework_simplejwt.views import (
 )
 from sharednotes.api.views import (get_doc_list, edit_public_access, delete_doc,
                                    get_colab_list, delete_colab, update_colab_access, get_doc,
-                                   export_rtf_string_to_pdf, edit_add_collaborator)
+                                   export_rtf_string_to_pdf, edit_add_collaborator, register_user, login_user)
 from .views.auth import google_login
 
 
@@ -32,6 +32,8 @@ urlpatterns = [
     path('auth/google/', google_login, name='google_login'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/register/', register_user),
+    path('api/login/', login_user),
 
     path('api/docs/', get_doc_list),
     path('api/docs/delete/', delete_doc),

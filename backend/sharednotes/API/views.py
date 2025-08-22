@@ -3,15 +3,67 @@ Views for API functionality
 """
 import os
 import tempfile
+from time import sleep
 import pypandoc
+from django.db import IntegrityError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.http import FileResponse, HttpResponseBadRequest
-from docs.models import DocEntry, Collaborators, User
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from rest_framework import status
+from docs.models import DocEntry, Collaborators
 from docs.serializer import DocEntrySerializer
 from docs.serializer import CollaboratorsSerializer
 from live_share.models import MongoNote
+from .utils import authenticate_login
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register_user(request):
+    """
+    Creates a new user without oauth directly into the User table
+    """
+    authentication = authenticate_login(request.data)
+    if authentication['success']:
+        try:
+            user = User.objects.create_user(
+            username=request.data['email'],
+            email=request.data['email'],
+            password=request.data['password1'],
+            first_name=request.data['fname'],
+            last_name=request.data['lname']
+            )
+        except IntegrityError as e:
+            print ("Failed to create user", e)
+            authentication['success': False, "errors": {"msg": "Something went wrong","field": "root"}]
+    return Response(authentication)
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login_user(request):
+    print(request.data['username'], request.data['password'])
+    user = authenticate(username=request.data['username'], password=request.data['password'])
+    if not user:
+        return Response({"success": False, "msg":"Wrong username or password"}, status=status.HTTP_200_OK)
+    else:
+        refresh = RefreshToken.for_user(user)
+        access_token = refresh.access_token
+        return Response({
+            'success': True,
+            'access_token': str(access_token),
+            'refresh_token': str(refresh),
+            'msg': f"Welcome {user.username}",
+            'user': {
+                'id': user.id,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+            }
+        }, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])

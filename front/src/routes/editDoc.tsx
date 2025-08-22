@@ -4,13 +4,8 @@ import EditorNavBar from "~/components/edit/EditorNavBar";
 import { useNavigate, useParams } from "react-router";
 import useGetData from "~/hooks/useGetData";
 import type { dataType, updateDataType } from "~/types/docTypes.tsx";
+import SpinnerPageLoading from "@/components/ui/spinners/SpinnerPageLoading";
 
-export function meta() {
-  return [
-    { title: "Edit" },
-    { name: "description", content: "Easy to share notes!" },
-  ];
-}
 
 const emptyDoc = {
   id: null,
@@ -42,6 +37,14 @@ const FileListRoute = () => {
 
   function closeSocketConnection() {
     if (liveSocketRef.current) {
+      liveSocketRef.current.send(
+        JSON.stringify({
+        type: "disconnect",
+        id: id,
+        name: updateDataRef.current.title,
+        content: updateDataRef.current.content,
+        })
+      )
       liveSocketRef.current.close();
     }
   }
@@ -56,8 +59,9 @@ const FileListRoute = () => {
 
   useEffect(() => {
     if (doc.access != -1) {
+      const socketUrl = import.meta.env.VITE_DEBUG === "True" ? import.meta.env.VITE_BACKEND_URL_DEBUG : import.meta.env.VITE_BACKEND_URL;
       const liveSocket = new WebSocket(
-        "ws://" + import.meta.env.VITE_WS_URL + `/ws/doc/${id}/`
+        socketUrl + `/ws/doc/${id}/`
       );
       liveSocketRef.current = liveSocket;
       liveSocket.onmessage = function (e) {
@@ -96,7 +100,7 @@ const FileListRoute = () => {
                 content: updateDataRef.current.content,
               })
             );
-            setUpdateData((prev) => ({ ...prev, flag: false }));
+            setUpdateData(prev => ({...prev, flag: false }));
           }
         }, 2000);
 
@@ -110,7 +114,6 @@ const FileListRoute = () => {
     if (id) {
       async function getContent() {
         const result = await getData("docs/" + id);
-        console.log(result);
         if (result.data.access === -1) {
           localStorage.setItem(
             "showToast",
@@ -119,6 +122,7 @@ const FileListRoute = () => {
           navigate("/");
         }
         setDoc(result.data);
+        setUpdateData(result.data);
         setIsLoading(false);
       }
       getContent();
@@ -128,7 +132,7 @@ const FileListRoute = () => {
   return (
     <div className="flex flex-col w-full h-full bg-gray-200 gap-2">
       {isLoading ? (
-        <h1>Loading.... </h1>
+        <div className="h-10 w-10"><SpinnerPageLoading /></div>
       ) : (
         <>
           <EditorNavBar

@@ -24,19 +24,19 @@ export default function DropDownFile({
 }: incomingProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="hover:bg-(--bg-acc-c) hover:text-(--text-c) cursor-pointer py-1 px-2 rounded-sm font-bold select-none">
+      <DropdownMenuTrigger className="hover:bg-(--bg-acc-c) hover:text-(--text-c) cursor-pointer py-1 px-2 rounded-sm font-bold select-none text-sm!">
         File
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel className="text-2xl w-full flex flex-row justify-start items-center gap-3">
-          <File />
+        <DropdownMenuLabel className="text-sm w-full flex flex-row justify-start items-center gap-3 font-bold!">
+          <File className="w-4 h-4"/>
           File
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="text-xl">
           <Link
             to={"/edit/" + generateUID()}
-            className="text-xl flex flex-row justify-center items-center gap-2"
+            className="text-sm flex flex-row justify-center items-center gap-2"
             onClick={closeSocket}
           >
             <ClipboardPlus />

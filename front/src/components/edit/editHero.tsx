@@ -82,12 +82,13 @@ const SimpleRichTextEditor = ({
   const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
     // Optional: You can track content changes here
     if (doc) {
-      const newData = {
-        ...updateData,
-        content: e.currentTarget.innerHTML,
+      if (editorRef.current!.innerHTML) {
+      setUpdateData((prev) => ({
+        ...prev,
+        content: editorRef.current!.innerHTML,
         flag: true,
-      };
-      setUpdateData(newData);
+      }));
+    }
     }
   };
 

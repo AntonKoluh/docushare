@@ -3,7 +3,8 @@ import { useNavigate } from "react-router";
 
 export default function AuthCallback() {
   const navigate = useNavigate();
-  const baseUrl = import.meta.env.VITE_BACKEND_URL;
+  console.log(import.meta.env.VITE_DEBUG)
+  const baseUrl = import.meta.env.VITE_DEBUG === "True" ? import.meta.env.VITE_BACKEND_URL_DEBUG : import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");

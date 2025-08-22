@@ -29,10 +29,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'ec2-13-49-0-196.eu-north-1.compute.amazonaws.com',
+]
 
+USE_X_FORWARDED_HOST = True
 
 # Application definition
 
@@ -69,6 +74,7 @@ ROOT_URLCONF = "sharednotes.urls"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # your frontend URL
     "http://127.0.0.1:5173",
+    "https://staging.d14znvuary829h.amplifyapp.com",
     # add others as needed
 ]
 
