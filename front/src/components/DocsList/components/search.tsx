@@ -13,7 +13,7 @@ export default function SearchList({searchTerm ,setSearch} : {searchTerm: string
       onChange={handleSearchChange}
       value={searchTerm}
     />
-    <span className="flex cursor-pointer text-center hover:bg-gray-400 rounded-md h-full items-center px-3" onClick={() => setSearch("")}>Clear</span>
+    <span className="flex cursor-pointer text-center hover:bg-gray-400 hover:rounded-l-none rounded-md h-full items-center px-3" onClick={() => setSearch("")}>Clear</span>
     </div>
   );
 }
