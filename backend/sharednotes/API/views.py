@@ -223,7 +223,6 @@ def export_rtf_string_to_pdf(request, file_format, uid):
     except Exception as e:
         print(e)
         return HttpResponseBadRequest(f"Error: {e}")
-
     finally:
         for path in [locals().get("rtf_path"), locals().get("pdf_path")]:
             if path and os.path.exists(path):
