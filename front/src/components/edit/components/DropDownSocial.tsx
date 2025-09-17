@@ -32,7 +32,9 @@ export default function DropDownSocial({ setShareOpen }: incomingProps) {
           <Eye />
           Manage Access
         </DropdownMenuItem>
-        <DropdownMenuItem className="text-xl">
+        <DropdownMenuItem className="text-xl"
+        onSelect={() => setShareOpen(true)}
+        >
           <Plus />
           Add Colaborator
         </DropdownMenuItem>

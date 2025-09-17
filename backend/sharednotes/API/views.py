@@ -47,25 +47,24 @@ def register_user(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_user(request):
-    print(request.data['username'], request.data['password'])
     user = authenticate(username=request.data['username'], password=request.data['password'])
     if not user:
         return Response({"success": False, "msg":"Wrong username or password"}, status=status.HTTP_200_OK)
-    else:
-        refresh = RefreshToken.for_user(user)
-        access_token = refresh.access_token
-        return Response({
-            'success': True,
-            'access_token': str(access_token),
-            'refresh_token': str(refresh),
-            'msg': f"Welcome {user.username}",
-            'user': {
-                'id': user.id,
-                'email': user.email,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-            }
-        }, status=status.HTTP_200_OK)
+
+    refresh = RefreshToken.for_user(user)
+    access_token = refresh.access_token
+    return Response({
+        'success': True,
+        'access_token': str(access_token),
+        'refresh_token': str(refresh),
+        'msg': f"Welcome {user.username}",
+        'user': {
+            'id': user.id,
+            'email': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+        }
+    }, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -195,6 +194,8 @@ def get_doc(request, uid):
                           "content": doc.content, "access": access})
     return Response({"access": access})
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
 def export_rtf_string_to_pdf(request, file_format, uid):
     """
     File download and converter
@@ -216,11 +217,12 @@ def export_rtf_string_to_pdf(request, file_format, uid):
 
         response = FileResponse(open(pdf_path, 'rb'), content_type="application/pdf")
         response["Content-Disposition"] = 'attachment; filename="document.pdf"'
+        print(response)
         return response
 
     except Exception as e:
+        print(e)
         return HttpResponseBadRequest(f"Error: {e}")
-
     finally:
         for path in [locals().get("rtf_path"), locals().get("pdf_path")]:
             if path and os.path.exists(path):
@@ -235,7 +237,7 @@ def export_rtf_string_to_pdf(request, file_format, uid):
 def ai_health(request):
     ai_url = os.getenv('AI_API_URL_DEBUG') if os.getenv("VITE_DEBUG") == "True" else os.getenv('AI_API_URL')
     ai_health = is_server_online(ai_url)
-    return Response({"success": True if ai_health else False})
+    return Response({"success": bool(ai_health)})
 
 
 @api_view(['POST'])

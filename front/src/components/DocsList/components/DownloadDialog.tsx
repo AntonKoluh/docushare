@@ -16,7 +16,7 @@ type incomingProps = {
 };
 
 export default function DownloadDialog({ uid, name }: incomingProps) {
-  const baseUrl = import.meta.env.VITE_BACKEND_URL;
+  const baseUrl = import.meta.env.VITE_DEBUG === "True" ? import.meta.env.VITE_BACKEND_URL_DEBUG : import.meta.env.VITE_BACKEND_URL;
   const [selected, setSelected] = useState<string>("");
   const [downloadLoading, setDownloadLoading] = useState(false);
   function handleOnDownload() {
