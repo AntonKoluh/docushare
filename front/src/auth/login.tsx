@@ -7,7 +7,7 @@ type incomingProps = {
 export default function Login({ text }: incomingProps) {
   const handleRedirectLogin = () => {
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-    const redirectUri = `${window.location.href}auth/callback`;
+    const redirectUri = `https://docushare.in.net/auth/callback`;
     const scope = "openid email profile";
 
     const authUrl =
