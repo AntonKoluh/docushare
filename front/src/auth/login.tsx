@@ -1,4 +1,4 @@
-import google_logo from '../../public/google-icon.svg'
+import googleLogo from '../../public/google-icon.svg'
 
 type incomingProps = {
   text: string;
@@ -25,7 +25,7 @@ export default function Login({ text }: incomingProps) {
       onClick={() => handleRedirectLogin()}
       className="flex flex-row justify-center items-center gap-2 w-full px-6 py-1.5 bg-black border-2 border-(--bg-c) rounded-md text-lg text-(--text-c) font-bold hover:bg-white hover:text-black cursor-pointer transition-all"
     >
-      <img src={google_logo} alt="google icon" className="w-5 h-5"/>{text}
+      <img src={googleLogo} alt="google icon" className="w-5 h-5"/>{text}
     </button>
   );
 }

@@ -30,9 +30,12 @@ const Navbar = ({ user }: incomingProps) => {
             Test
           </p> */}
         </div>
-        <div>
+        <div className="flex flex-row gap-10 justify-around items-center">
+          <Link to="/about" className="text-xl font-bold! text-gray-300! cursor-pointer">
+            About
+            </Link>
           {displayName ? (
-            <DropDownAccount displayName={displayName} />
+            <DropDownAccount displayName={displayName.toUpperCase()} />
           ) : (
             <LoginModal text="Login" />
           )}
