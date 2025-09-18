@@ -14,14 +14,14 @@ class GoogleAuthService:
         """
         Verify Google access token and return user info
         """
-        redirect_uri = "http://localhost:5173" if os.getenv('VITE_DEBUG') == "True" else os.getenv('VITE_BACKEND_URL')
+        redirect_uri = "http://localhost:5173/auth/callback" if os.getenv('VITE_DEBUG') == "True" else os.getenv('GOOGLE_REDIRECT')
         try:
             token_url = "https://oauth2.googleapis.com/token"
             payload = {
                 "code": access_token,
                 "client_id": os.getenv("GOOGLE_ID"),
                 "client_secret": os.getenv("GOOGLE_SECRET"),
-                "redirect_uri": f"{redirect_uri}/auth/callback",
+                "redirect_uri": redirect_uri,
                 "grant_type": "authorization_code",
             }
 
