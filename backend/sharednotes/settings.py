@@ -18,17 +18,9 @@ from corsheaders.defaults import default_headers
 
 load_dotenv()
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('DJANGO_SECRET')
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.getenv('VITE_DEBUG') == 'True' else False
 
 ALLOWED_HOSTS = [
@@ -38,13 +30,12 @@ ALLOWED_HOSTS = [
     'seal-popular-alpaca.ngrok-free.app',
     'api.docushare.in.net',
     'docushare.in.net',
-    '13.49.0.196', 
+    '50.90.21.144', 
 ]
 
 USE_X_FORWARDED_HOST = True if os.getenv('VITE_DEBUG') == 'True' else False
 
 # Application definition
-
 INSTALLED_APPS = [
     'daphne',
     "django.contrib.admin",
@@ -77,12 +68,12 @@ MIDDLEWARE = [
 ROOT_URLCONF = "sharednotes.urls"
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # your frontend URL
+    "http://localhost:5173",
     "http://127.0.0.1:5173",
     "https://staging.d14znvuary829h.amplifyapp.com",
     "https://docushare.in.net",
     "https://api.docushare.in.net",
-    # add others as needed
+    "http://52.90.21.144",
 ]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
@@ -111,9 +102,9 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',  # or your default
+        'rest_framework.permissions.IsAuthenticated',
     ],
-    'UNAUTHENTICATED_USER': None  # ← prevents token validation errors
+    'UNAUTHENTICATED_USER': None
 }
 
 SIMPLE_JWT = {
@@ -136,7 +127,7 @@ DATABASES = {
 }
 
 MONGO_DATABASE_NAME = 'shared_notes'
-MONGO_HOST = os.getenv('MONGO_IP')
+MONGO_HOST = os.getenv('MONGO_IP_DEBUG') if os.getenv('VITE_DEBUG') == 'True' else os.getenv('MONGO_IP')
 MONGO_PORT = 27017
 
 

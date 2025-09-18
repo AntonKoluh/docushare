@@ -1,7 +1,6 @@
 import { useMediaQuery } from "~/hooks/useGetScreenWidth";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -15,7 +14,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-import { Button } from "../ui/button";
 import React from "react";
 
 type incomingProps = {
@@ -49,13 +47,8 @@ export function ResponsiveDialog({
               </DrawerDescription>
             )}
           </DrawerHeader>
-          <DrawerFooter>
-            <Button>Submit</Button>
-            <DrawerClose>
-              <Button variant="outline">Cancel</Button>
-            </DrawerClose>
-          </DrawerFooter>
           {children}
+          <DrawerFooter />
         </DrawerContent>
       </Drawer>
     );

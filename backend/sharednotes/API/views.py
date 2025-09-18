@@ -3,7 +3,6 @@ Views for API functionality
 """
 import os
 import tempfile
-from time import sleep
 import pypandoc
 import requests
 import json
@@ -217,7 +216,6 @@ def export_rtf_string_to_pdf(request, file_format, uid):
 
         response = FileResponse(open(pdf_path, 'rb'), content_type="application/pdf")
         response["Content-Disposition"] = 'attachment; filename="document.pdf"'
-        print(response)
         return response
 
     except Exception as e:
@@ -300,7 +298,6 @@ def ai_sum(request):
                     if "response" in data:
                         fulldata += data["response"]
                         yield json.dumps({"success": True, "msg": data["response"]}) + "\n"
-        print(fulldata)
         mongo_doc.ai_sum = fulldata
         mongo_doc.save()
     return StreamingHttpResponse(event_stream(), content_type="application/x-ndjson")

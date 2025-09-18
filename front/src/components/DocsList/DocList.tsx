@@ -13,6 +13,7 @@ import SpinnerDocList from "../ui/spinners/SpinnerDocList";
 import { generateUID } from "~/helpers/helpers";
 import { FileMinus, Plus } from "lucide-react";
 import SearchList from "./components/search";
+import { useMediaQuery } from "@/hooks/useGetScreenWidth";
 
 const DocList = () => {
   const getData = useGetData();
@@ -22,6 +23,7 @@ const DocList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const currentUser = JSON.parse(localStorage.getItem("user")!).email;
   const newUID = generateUID();
+  const isSmallScreen = useMediaQuery("(max-width: 764px)");
 
   useEffect(() => {
     const getListData = async () => {
@@ -33,19 +35,6 @@ const DocList = () => {
     getListData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // useEffect(() => {
-  //   if (data && data.length > 0) {
-  //   const reordered_list = [...data].sort((a, b) => {
-  //     const aHas = a.name.toLowerCase().includes(searchTerm.toLowerCase());
-  //     const bHas = b.name.toLowerCase().includes(searchTerm.toLowerCase());
-
-  //     if (aHas == bHas) return 0;
-  //     return aHas ? -1 : 1;
-  //   })
-  //   setData(reordered_list)
-  //   }
-  // }, [searchTerm])
 
     useEffect(() => {
     if (searchTerm === "") {
@@ -66,15 +55,14 @@ const DocList = () => {
           <Link to={"/edit/" + newUID}>
             <NewFile />
           </Link>
-          <span className="absolute left-1/2 -translate-x-1/2"><SearchList searchTerm={searchTerm} setSearch={setSearchTerm}/></span>
+          <span className="absolute left-1/2 -translate-x-1/2 top-3/2 xl:top-1/2 xl:-translate-y-1/2"><SearchList searchTerm={searchTerm} setSearch={setSearchTerm}/></span>
         </div>
-        {/* <SearchList /> */}
       </div>
-      <div className="flex flex-col pt-20 w-full">
+      <div className="flex flex-col pt-20 w-full ">
         <div className="flex flex-row justify-start items-center w-full border-b-1 px-2 border-(--bg-acc-c)">
-          <p className="flex-6 font-bold w-full">Name</p>
-          <p className="flex-2 font-bold w-full text-center">Owner</p>
-          <p className="flex-2 font-bold w-full text-center">Last modified</p>
+          <p className="flex-6 font-bold w-full xl:text-xl text-md!">Name</p>
+          <p className="flex-2 font-bold w-full text-center xl:text-xl text-md!">Owner</p>
+          <p className="flex-2 font-bold w-full text-center xl:text-xl text-md!">Modified</p>
           <p className="flex-1 w-full"></p>
         </div>
         {isLoading ? (
@@ -94,19 +82,22 @@ const DocList = () => {
           data.map((obj) => {
             const displayOwner =
               obj.owner.username === currentUser ? "Me" : obj.owner.username;
+              if (isSmallScreen) {
+                obj.short_name = obj.name.slice(0, 10) + "..."
+              }
             return (
               <Link to={"/edit/" + obj.uid} key={obj.id}>
                 <div className=" cursor-pointer flex flex-row justify-center items-center w-full border-b-1 h-10 border-b-gray-400 px-2 hover:bg-(--text-acc-c)">
-                  <p className="flex-6 w-full text-md! flex flex-row justify-start items-center gap-2">
-                    <FileMinus /> <span className="pt-1">{obj.name}</span>
+                  <p className="flex-6 w-full flex flex-row justify-start items-center gap-2 sm:text-sm md:text-md">
+                    <FileMinus /> <span className="pt-1 md:text-sm">{isSmallScreen ? obj.short_name : obj.name}</span>
                   </p>
-                  <p className="flex-2 w-full text-center text-md! pt-1">
+                  <p className="flex-2 w-full text-center text-sm! pt-1">
                     {displayOwner}
                   </p>
                   <HoverCard>
                     <HoverCardTrigger className="w-full flex-2" asChild>
-                      <p className="flex-2 w-full text-center text-md! pt-1">
-                        {obj.updated_at.slice(0, 10)}
+                      <p className="flex-2 w-full text-center text-sm! pt-1 xl:px-0 sm:px-1">
+                        {isSmallScreen ? obj.updated_at.slice(5, 10) : obj.updated_at.slice(0, 10)}
                       </p>
                     </HoverCardTrigger>
                     <HoverCardContent className="w-fit">

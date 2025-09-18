@@ -27,7 +27,7 @@ body {
 }
 
 p {
-  @apply text-lg font-(family-name:--font-secondary) text-(--bg-acc-c)/90 font-semibold;
+  @apply font-(family-name:--font-secondary) text-(--bg-acc-c)/90 font-semibold;
 }
 
 h1 {

@@ -25,6 +25,6 @@ class ApiConfig(AppConfig):
         redis_ip = os.getenv('REDIS_DEBUG') if os.getenv('VITE_DEBUG') == 'True' else os.getenv('REDIS_IP')
         print(redis_ip, os.getenv('VITE_DEBUG'))
         r = redis.StrictRedis(host=redis_ip, port=6379, db=0)
-        r.flushdb()  # ⚠️ This clears ALL keys in current DB (e.g. DB 0)
+        r.flushdb()
         print("✔ Redis flushed on startup.")
         print("✔ MongoDB connected via mongoengine")

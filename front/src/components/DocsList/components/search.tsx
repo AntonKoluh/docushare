@@ -3,7 +3,7 @@ export default function SearchList({searchTerm ,setSearch} : {searchTerm: string
     setSearch(e.target.value);
   }
   return (
-    <div className="flex flex-row justify-between items-center w-100 h-8 bg-gray-300 rounded-md text-md border-1 border-black">
+    <div className="flex flex-row justify-between items-center max-w-100 min-w-70 h-8 bg-gray-300 rounded-md text-md border-1 border-black">
     <input
       type="text"
       name="docListSearch"

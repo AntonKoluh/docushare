@@ -2,14 +2,11 @@
 import os
 import requests
 from django.contrib.auth.models import User
-import logging
 from dotenv import load_dotenv
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 
 load_dotenv()
-
-logger = logging.getLogger(__name__)
 
 class GoogleAuthService:
     @staticmethod
@@ -17,30 +14,20 @@ class GoogleAuthService:
         """
         Verify Google access token and return user info
         """
-        print("=" * 50)
-        print("GOOGLE AUTH DEBUG - START")
-        print(f"Received token: {access_token[:20]}...")
-        print("=" * 50)
-        print("HELLLLOOOO")
+        redirect_uri = "http://localhost:5173" if os.getenv('VITE_DEBUG') == "True" else os.getenv('VITE_BACKEND_URL')
         try:
             token_url = "https://oauth2.googleapis.com/token"
-            print(access_token)
             payload = {
                 "code": access_token,
                 "client_id": os.getenv("GOOGLE_ID"),
                 "client_secret": os.getenv("GOOGLE_SECRET"),
-                "redirect_uri": "https://docushare.in.net/auth/callback",
+                "redirect_uri": f"{redirect_uri}/auth/callback",
                 "grant_type": "authorization_code",
             }
-
-            print("Submitting payload to Google token endpoint:")
-            for k, v in payload.items():
-                logger.debug(f"{k} = {v}")
 
             response = requests.post(token_url, data=payload)
             
             if response.status_code != 200:
-                logger.error(f"Token verification failed: {response.text}")
                 return None
             
             token_info = response.json()
@@ -49,9 +36,7 @@ class GoogleAuthService:
             google_requests.Request(),
             os.getenv("GOOGLE_ID")
             )
-            # Verify the token belongs to our app
             if user_info.get('azp') != os.getenv('GOOGLE_ID'):
-                logger.error("Token audience doesn't match client ID")
                 return None
             
             
@@ -63,12 +48,11 @@ class GoogleAuthService:
                 'picture': user_info.get('picture', ''),
                 'email_verified': user_info.get('verified_email', False)
             }
-            
         except requests.RequestException as e:
-            logger.error(f"Network error during token verification: {e}")
+            print(f"Network error during token verification: {e}")
             return None
         except Exception as e:
-            logger.error(f"Unexpected error during token verification: {e}")
+            print(f"Unexpected error during token verification: {e}")
             return None
 
     @staticmethod
@@ -77,7 +61,6 @@ class GoogleAuthService:
         Get or create user based on Google user data
         """
         try:
-            # Try to get user by email
             user, created = User.objects.get_or_create(
                 email=user_data['email'],
                 defaults={
@@ -87,8 +70,6 @@ class GoogleAuthService:
                     'is_active': True,
                 }
             )
-            
-            # Update user info if user already exists
             if not created:
                 user.first_name = user_data['given_name']
                 user.last_name = user_data['family_name']
@@ -96,5 +77,5 @@ class GoogleAuthService:
             
             return user
         except Exception as e:
-            logger.error(f"Error creating/updating user: {e}")
+            print(f"Error creating/updating user: {e}")
             return None
