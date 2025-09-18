@@ -137,7 +137,7 @@ const LoginInner = ({ setState }: LoginInnerType) => {
       </div>
       <span className="border-b-2 w-full"></span>
       <div className="w-full px-3">
-        <Login text="Login with google" />
+        <Login text="Login with Google" />
       </div>
     </div>
   );

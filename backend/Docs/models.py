@@ -7,8 +7,6 @@ from django.contrib.auth import get_user_model
 from live_share.models import MongoNote
 from django.conf import settings
 
-
-# Create your models here.
 class DocEntry(models.Model):
     """
     Doc entry main table

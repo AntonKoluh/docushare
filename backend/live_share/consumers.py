@@ -77,8 +77,6 @@ class ChatConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name, self.channel_name
         )
-
-        # Accept/Reject connection logic goes here!
         self.accept()
         redis_key = f"latest_doc{self.doc_name}"
         latest_raw = redis_client.get(redis_key)
@@ -92,7 +90,6 @@ class ChatConsumer(WebsocketConsumer):
 
     def disconnect(self, code=None):
         # Leave room group
-        
         latest_msg = get_latest_redis(self.doc_name)
         user_list = remove_user_connection(self.doc_name, self.username)
         async_to_sync(self.channel_layer.group_send)(
@@ -164,18 +161,14 @@ class ChatConsumer(WebsocketConsumer):
         # If no time exists, simulate a last-edit time in the past
         if not last_edit_time:
             last_edit_time = (now - timedelta(seconds=35)).isoformat()
-
-            # Check if 30 seconds have passed
+        # Check if 30 seconds have passed
         elapsed = now - datetime.fromisoformat(last_edit_time)
         if elapsed > timedelta(seconds=30):
             latest_msg["time"] = now.isoformat()
             save_to_dbs(latest_msg, self.doc_name, self.username)
         else:
             latest_msg["time"] = last_edit_time
-
-        # Save back to Redis
         redis_client.set(redis_key, json.dumps(latest_msg))
-
         # Send message to the room group (excluding self handled elsewhere)
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
@@ -196,8 +189,6 @@ class ChatConsumer(WebsocketConsumer):
             return
         name = event["name"]
         content = event["content"]
-
-        # Send message to WebSocket
         self.send(text_data=json.dumps({"type": "msg", "content": content, "name": name}))
 
     def user_update(self, event):
@@ -206,6 +197,4 @@ class ChatConsumer(WebsocketConsumer):
         """
         event_type = event["type"]
         users = event["users"]
-
-        # Send message to WebSocket
         self.send(text_data=json.dumps({"type": event_type, "users": users}))

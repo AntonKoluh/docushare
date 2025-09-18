@@ -31,8 +31,7 @@ def authenticate_login(data):
     
 def is_server_online(hostname):
     """
-    Checks if a server is online, testing is done on windows
-    and prod on linux, so have to check os.name
+    Simple server response check
     """
     command = f"curl {hostname} -m 3"
     return os.system(command) == 0

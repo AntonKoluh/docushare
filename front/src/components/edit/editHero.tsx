@@ -1,4 +1,4 @@
-import React, {
+import {
   useRef,
   useState,
   useCallback,
@@ -30,7 +30,6 @@ type incomingProps = {
 
 const SimpleRichTextEditor = ({
   doc,
-  updateData,
   setUpdateData,
 }: incomingProps) => {
   const { id } = useParams<{ id: string }>();
@@ -79,7 +78,7 @@ const SimpleRichTextEditor = ({
     checkFormatting();
   };
 
-  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+  const handleInput = () => {
     // Optional: You can track content changes here
     if (doc) {
       if (editorRef.current!.innerHTML) {

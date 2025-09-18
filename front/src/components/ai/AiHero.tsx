@@ -15,6 +15,7 @@ type incomingProps = {
 };
 
 const AiHero = ({ uid }: incomingProps) => {
+  const baseUrl = import.meta.env.VITE_DEBUG === "True" ? import.meta.env.VITE_BACKEND_URL_DEBUG : import.meta.env.VITE_BACKEND_URL;
   const [msg, setMsg] = useState("");
   const [isGenerating, setIsGenerating] = useState(true);
   const [aiStatus, setAiStatus] = useState<"loading" | "on" | "off">("loading");
@@ -23,7 +24,7 @@ const AiHero = ({ uid }: incomingProps) => {
   const getStream = async (isUsingCache = true) => {
     if (msg !== "") setMsg("");
     setIsGenerating(true);
-    const response = await fetch("http://localhost:8000/api/ai/test/", {
+    const response = await fetch(`${baseUrl}/api/ai/test/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

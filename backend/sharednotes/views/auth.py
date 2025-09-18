@@ -25,11 +25,9 @@ def google_login(request):
     Expected payload: {"access_token": "google_access_token"}
     """
     try:
-        # Get the access token from request
         token_url = "https://oauth2.googleapis.com/token"
         access_token = request.data.get('access_token')
         redirect_uri = "http://localhost:5173" if os.getenv('VITE_DEBUG') == "True" else os.getenv('VITE_BACKEND_URL')
-        print(redirect_uri)
         payload = {
             "code": access_token,
             "client_id": os.getenv("GOOGLE_ID"),
@@ -38,7 +36,7 @@ def google_login(request):
             "grant_type": "authorization_code",
         }
         response = requests.post(token_url, data=payload)
-        
+
         if response.status_code != 200:
             logger.error(f"Token verification failed: {response.text}")
             return Response(
@@ -59,14 +57,12 @@ def google_login(request):
                 status=status.HTTP_401_UNAUTHORIZED
             )
         
-        # Check if email is verified
         if not user_data.get('email_verified', False):
             return Response(
                 {'error': 'Email not verified with Google'}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Get or create user
         user = GoogleAuthService.get_or_create_user(user_data)
         
         if not user:
