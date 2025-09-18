@@ -9,7 +9,6 @@ export default function Login({ text }: incomingProps) {
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     const redirectUri = `${window.location.href}auth/callback`;
     const scope = "openid email profile";
-    console.log("redirect URI: ", redirectUri)
 
     const authUrl =
       `https://accounts.google.com/o/oauth2/v2/auth` +
@@ -18,9 +17,7 @@ export default function Login({ text }: incomingProps) {
       `&response_type=code` +
       `&scope=${encodeURIComponent(scope)}` +
       `&prompt=select_account`;
-    console.log("Redirecting to:", authUrl);
     window.location.href = authUrl;
-    console.log("Redirecting to:", authUrl);
   };
 
   return (

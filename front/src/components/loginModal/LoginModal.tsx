@@ -77,7 +77,6 @@ const LoginInner = ({ setState }: LoginInnerType) => {
       { username: user, password: pass },
       false
     );
-    console.log(result);
     if (!result.data.success) {
       toast(result.data.msg);
       setState("Login");

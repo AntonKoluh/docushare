@@ -23,7 +23,7 @@ export default function AuthCallback() {
         JSON.stringify(data.user)
       );
 
-      navigate("/"); // or home/dashboard
+      navigate("/");
     };
 
     handleRedirectSuccess();
