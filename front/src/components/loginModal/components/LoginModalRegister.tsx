@@ -41,7 +41,6 @@ const RegisterInner = ({ setState }: LoginInnerType) => {
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     const result = await postData("register/", data, false);
-    console.log(result);
     if (!result.data.success) {
       result.data.errors.forEach(
         (err: {

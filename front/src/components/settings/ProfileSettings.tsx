@@ -1,5 +1,5 @@
 const ProfileSettings = () => {
-  return <h1>WIP</h1>;
+  return <h1 className="w-full text-center">WIP</h1>;
 };
 
 export default ProfileSettings;

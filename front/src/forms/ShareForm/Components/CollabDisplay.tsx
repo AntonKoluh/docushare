@@ -56,7 +56,6 @@ const CollabDisplay = ({
           ? { ...obj, auth: result.data.auth }
           : obj
       );
-      console.log(newList, id);
       setCollaborators(newList);
     }
   };
