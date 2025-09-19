@@ -73,6 +73,7 @@ class GoogleAuthService:
             if not created:
                 user.first_name = user_data['given_name']
                 user.last_name = user_data['family_name']
+                user.set_unusable_password()
                 user.save()
             
             return user
