@@ -1,5 +1,5 @@
 import Welcome from "~/components/welcome/welcome";
-import Navbar from "~/components/navbar/navbar";
+import Navbar from "@/components/navbar/Navbar";
 import { useEffect, useState } from "react";
 import DocList from "~/components/DocsList/DocList";
 import { loginCheck } from "~/helpers/helpers";

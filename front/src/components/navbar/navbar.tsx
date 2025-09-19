@@ -14,7 +14,7 @@ const Navbar = ({ user }: incomingProps) => {
     : null;
 
   return (
-    <div className="bg-(--bg-acc-c)/50  w-full shadow-2xl">
+    <div className="bg-(--bg-acc-c)/70  w-full shadow-2xl">
       <nav className="flex flex-row justify-between items-center h-18 w-full max-w-7xl mx-auto">
         <div>
           <Link
@@ -31,9 +31,16 @@ const Navbar = ({ user }: incomingProps) => {
           </p> */}
         </div>
         <div className="flex flex-row gap-10 justify-around items-center">
-          <Link to="/about" className="text-xl font-bold! text-gray-300! cursor-pointer">
+          <Link
+            to="/about"
+            className="
+              text-xl font-bold! text-gray-300! cursor-pointer relative before:content-[''] before:absolute 
+              before:left-0 before:-bottom-1 before:w-0 before:h-[3px] before:bg-yellow-400 before:transition-all
+              before:duration-300 hover:before:w-full
+              "
+          >
             About
-            </Link>
+          </Link>
           {displayName ? (
             <DropDownAccount displayName={displayName.toUpperCase()} />
           ) : (
