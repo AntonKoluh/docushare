@@ -1,4 +1,4 @@
-import Navbar from "@/components/navbar/navbar";
+import Navbar from "@/components/navbar/Navbar";
 import { loginCheck } from "@/helpers/helpers";
 import type { userType } from "@/types/accountType";
 import { useEffect, useState } from "react";
