@@ -1,0 +1,15 @@
+.spinner {
+    animation: save 2.5s infinite ease-in-out;
+}
+
+@keyframes save {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0.9;
+  }
+}

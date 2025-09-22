@@ -24,7 +24,7 @@ from rest_framework_simplejwt.views import (
 from sharednotes.api.views import (get_doc_list, edit_public_access, delete_doc,
                                    get_colab_list, delete_colab, update_colab_access, get_doc,
                                    export_rtf_string_to_pdf, edit_add_collaborator, register_user, 
-                                   login_user, ai_sum, ai_health)
+                                   login_user, ai_sum, ai_health, manual_save)
 from .views.auth import google_login
 
 
@@ -39,6 +39,7 @@ urlpatterns = [
     path('api/docs/', get_doc_list),
     path('api/docs/delete/', delete_doc),
     path('api/docs/<str:uid>/', get_doc),
+    path('api/docs/save', manual_save),
     path('api/colab/public_access/', edit_public_access),
     path('api/colab/add_colab/', edit_add_collaborator),
     path('api/colab/<int:doc_id>/', get_colab_list),

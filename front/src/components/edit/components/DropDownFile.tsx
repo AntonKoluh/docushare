@@ -1,4 +1,4 @@
-import { ArrowDownToLine, File, ClipboardPlus, Trash2 } from "lucide-react";
+import { ArrowDownToLine, File, ClipboardPlus, Trash2, Save } from "lucide-react";
 import { Link } from "react-router";
 import {
   DropdownMenu,
@@ -15,12 +15,14 @@ type incomingProps = {
   setDownloadOpen: React.Dispatch<React.SetStateAction<boolean>>;
   closeSocket: () => void;
   setDeleteOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  handleSave: () => void;
 };
 
 export default function DropDownFile({
   setDownloadOpen,
   closeSocket,
   setDeleteOpen,
+  handleSave,
 }: incomingProps) {
   return (
     <DropdownMenu>
@@ -29,7 +31,7 @@ export default function DropDownFile({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel className="text-sm w-full flex flex-row justify-start items-center gap-3 font-bold!">
-          <File className="w-4 h-4"/>
+          <File className="w-4 h-4" />
           File
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -40,8 +42,17 @@ export default function DropDownFile({
             onClick={closeSocket}
           >
             <ClipboardPlus />
-            New Doc
+            New
           </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem className="text-xl">
+          <div
+            className="text-sm flex flex-row justify-center items-center gap-2 cursor-pointer"
+            onClick={handleSave}
+          >
+            <Save />
+            Save
+          </div>
         </DropdownMenuItem>
         <DropdownMenuItem
           className="text-xl cursor-pointer"

@@ -5,6 +5,8 @@ import { useNavigate, useParams } from "react-router";
 import useGetData from "~/hooks/useGetData";
 import type { dataType, updateDataType } from "~/types/docTypes.tsx";
 import SpinnerPageLoading from "@/components/ui/spinners/SpinnerPageLoading";
+import usePostData from "@/hooks/usePostData";
+import { toast } from "sonner";
 
 
 const emptyDoc = {
@@ -29,13 +31,15 @@ const FileListRoute = () => {
     flag: false,
   });
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
   const updateDataRef = useRef(updateData);
   const stocketStatusRef = useRef(socketStatus);
   const liveSocketRef = useRef<WebSocket | null>(null);
   const getData = useGetData();
+  const postData = usePostData();
   const navigate = useNavigate();
 
-  function closeSocketConnection() {
+  const closeSocketConnection = () => {
     if (liveSocketRef.current) {
       liveSocketRef.current.send(
         JSON.stringify({
@@ -47,6 +51,17 @@ const FileListRoute = () => {
       )
       liveSocketRef.current.close();
     }
+  }
+
+  const handleManualSave = async () => {
+    setIsSaving(true)
+    const res = await postData("docs/save", {"uid": doc.uid, "title": updateDataRef.current.title, "content": updateDataRef.current.content})
+    if (res.data?.success) {
+      toast("Doc saved successfully")
+    } else {
+      toast("Something went wrong")
+    }
+    setIsSaving(false)
   }
 
   useEffect(() => {
@@ -142,6 +157,8 @@ const FileListRoute = () => {
             setUpdateData={setUpdateData}
             onlineUsers={onlineUsers}
             closeSocket={closeSocketConnection}
+            handleManualSave={handleManualSave}
+            isSaving={isSaving}
           />
           <SimpleRichTextEditor
             doc={doc}
