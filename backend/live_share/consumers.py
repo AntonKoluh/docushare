@@ -127,9 +127,9 @@ class ChatConsumer(WebsocketConsumer):
         )
             return
         if msg_type == "disconnect":
-            print(self.doc_name)
             latest_msg = get_latest_redis(self.doc_name) if get_latest_redis(self.doc_name) else {}
-            if latest_msg.get("updated") and datetime.fromisoformat(latest_msg.get("updated")) < now:
+            print (data["name"], data["content"])
+            if not latest_msg.get("updated") or datetime.fromisoformat(latest_msg.get("updated")) < now:
                 latest_msg.update({
                     "name": data["name"],
                     "content": data["content"],
@@ -137,7 +137,6 @@ class ChatConsumer(WebsocketConsumer):
                     "updated": now.isoformat(),
                 })
                 save_to_dbs(latest_msg, self.doc_name, self.username)
-                print(self.doc_name)
                 return
 
         # Extract message data

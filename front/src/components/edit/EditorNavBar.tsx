@@ -20,6 +20,7 @@ import DownloadDialog from "../DocsList/components/DownloadDialog";
 import DeleteDialog from "../DocsList/components/DeleteDialog";
 import { MoveLeft } from "lucide-react";
 import type { dataType, updateDataType } from "~/types/docTypes.tsx";
+import SaveSpinner from "../ui/spinners/SaveSpinner";
 
 type incomingProps = {
   doc: dataType;
@@ -28,6 +29,8 @@ type incomingProps = {
   setUpdateData: Dispatch<SetStateAction<updateDataType>>;
   onlineUsers: string[];
   closeSocket: () => void;
+  handleManualSave: () => void;
+  isSaving: boolean;
 };
 
 const EditorNavBar = ({
@@ -36,6 +39,8 @@ const EditorNavBar = ({
   setUpdateData,
   onlineUsers,
   closeSocket,
+  handleManualSave,
+  isSaving,
 }: incomingProps) => {
   const fileNameRef = useRef<HTMLInputElement>(null);
   const [shareOpen, setShareOpen] = useState(false);
@@ -49,13 +54,24 @@ const EditorNavBar = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [doc?.title]);
 
-  function handleOnTitleChange() {
-  const title = fileNameRef.current?.value || "";
-  setUpdateData(prevData => ({
-    ...prevData,
-    title,
-    flag: true,
-  }));
+    useEffect(() => {
+    const handleSaveShortcut = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "s") {
+        e.preventDefault();
+        console.log("Ctrl + S pressed! Run your save function here.");
+        handleManualSave()
+      }
+    };
+
+    window.addEventListener("keydown", handleSaveShortcut);
+    return () => {
+      window.removeEventListener("keydown", handleSaveShortcut);
+    };
+  }, []);
+
+  const handleOnTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const title = e.target.value;
+  setUpdateData((prev) => ({ ...prev, title, flag: true }));
   }
 
   return (
@@ -133,6 +149,7 @@ const EditorNavBar = ({
               </p>
             ) : null}
             <div className="text-right justify-self-end flex flex-row justify-center items-center gap-2">
+              {isSaving && <SaveSpinner />}
               <p className="text-black! mr-2">Viewing:</p>
               {onlineUsers.map((user) => (
                 <div
@@ -160,6 +177,7 @@ const EditorNavBar = ({
                   setDownloadOpen={setDownloadOpen}
                   closeSocket={closeSocket}
                   setDeleteOpen={setDeleteOpen}
+                  handleSave={handleManualSave}
                 />
               </li>
               <li className="text-xl px-2 py-1  cursor-pointer">

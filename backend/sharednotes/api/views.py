@@ -161,26 +161,10 @@ def get_doc(request, uid):
     """
     Gets initial post as backup incase WS fail and for faster loading.
     + access verification
-    access: -1 - denied, 0 - readonly, 1 - read/write
     """
-    doc_entry = DocEntry.objects.filter(uid=uid).first()
-    if not doc_entry and request.user.is_authenticated:
-        user = User.objects.filter(username=request.user.username).first()
-        doc_entry = DocEntry(uid=uid, name="New Document", doc=uid, owner=user)
-        doc_entry.save()
-    try:
-        accessing_user = request.user.username
-    except AttributeError:
-        accessing_user = "Guest"
-    collab_check = Collaborators.objects.filter(doc_entry=doc_entry,
-                                               collaborator__username = accessing_user).first()
-    if doc_entry.owner.username == accessing_user:
-        access = 1
-    elif collab_check:
-        access = collab_check.auth
-    else:
-        access = 0 if doc_entry.public_access else -1
 
+    access = DocEntry.access_check(request.user, uid)
+    doc_entry = DocEntry(uid=uid, name="New Document", doc=uid, owner=request.user)
     doc = MongoNote.objects.filter(doc_id=doc_entry.uid).first() # pylint: disable=no-member
     if not doc:
         MongoNote.objects(doc_id=doc_entry.uid).update_one( # pylint: disable=no-member
@@ -192,6 +176,21 @@ def get_doc(request, uid):
         return Response({"id": doc_entry.id, "uid": uid, "title": doc_entry.name,
                           "content": doc.content, "access": access})
     return Response({"access": access})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def manual_save(request):
+    access = DocEntry.access_check(request.user, request.data["uid"])
+    if access == 1:
+        doc_entry = DocEntry.objects.filter(uid=request.data["uid"]).first()
+        mongo_entry = MongoNote.objects.filter(doc_id=request.data["uid"]).first()
+        if doc_entry:
+            doc_entry.name = request.data["title"]
+            mongo_entry.content = request.data["content"]
+            doc_entry.save()
+            mongo_entry.save()
+            return Response({"success": True})
+    return Response({"success": False})
 
 @api_view(['GET'])
 @permission_classes([AllowAny])

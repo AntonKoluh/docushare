@@ -79,6 +79,33 @@ class DocEntry(models.Model):
             return {"success": True, "msg":f"{username} has been removed"
                                             f"as a collaborator in {doc.name}"}
         return {"success": False, "msg": "Unknown error"}
+    
+    @staticmethod
+    def access_check(user, uid):
+        """
+        + access verification
+        access: -1 - denied, 0 - readonly, 1 - read/write
+        """
+        User = get_user_model()
+        doc_entry = DocEntry.objects.filter(uid=uid).first()
+        if not doc_entry and user.is_authenticated:
+            user = User.objects.filter(username=user.username).first()
+            doc_entry = DocEntry(uid=uid, name="New Document", doc=uid, owner=user)
+            doc_entry.save()
+        try:
+            accessing_user = user.username
+        except AttributeError:
+            accessing_user = "Guest"
+        collab_check = Collaborators.objects.filter(doc_entry=doc_entry,
+                                                collaborator__username = accessing_user).first()
+        if doc_entry.owner.username == accessing_user:
+            access = 1
+        elif collab_check:
+            access = collab_check.auth
+        else:
+            access = 0 if doc_entry.public_access else -1
+        
+        return access
 
 
 
