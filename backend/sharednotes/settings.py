@@ -26,11 +26,8 @@ DEBUG = True if os.getenv('VITE_DEBUG') == 'True' else False
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'ec2-13-49-0-196.eu-north-1.compute.amazonaws.com',
-    'seal-popular-alpaca.ngrok-free.app',
     'api.docushare.in.net',
     'docushare.in.net',
-    '50.90.21.144', 
 ]
 
 USE_X_FORWARDED_HOST = True if os.getenv('VITE_DEBUG') == 'True' else False
@@ -70,10 +67,8 @@ ROOT_URLCONF = "sharednotes.urls"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://staging.d14znvuary829h.amplifyapp.com",
     "https://docushare.in.net",
     "https://api.docushare.in.net",
-    "http://52.90.21.144",
 ]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
