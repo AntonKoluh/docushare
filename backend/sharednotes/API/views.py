@@ -256,10 +256,8 @@ def ai_sum(request):
         return Response({"success": False, "msg": "Cant find requested doc"})
     if not doc.public_access:
         if not user:
-            print(user, doc.public_access, "AAAAA")
             return Response({"success": False, "msg": "You are not eligeble to view this doc"})
         if collab_check is None and doc.owner != user_obj:
-            print(collab_check, doc.owner != user_obj)
             return Response({"success": False, "msg": "You are not eligeble to view this doc"})
     if mongo_doc.ai_sum and request.data['use_cache']:
         return Response({"success": True, "msg":mongo_doc.ai_sum})

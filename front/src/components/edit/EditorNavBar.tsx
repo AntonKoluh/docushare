@@ -58,7 +58,6 @@ const EditorNavBar = ({
     const handleSaveShortcut = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.key === "s") {
         e.preventDefault();
-        console.log("Ctrl + S pressed! Run your save function here.");
         handleManualSave()
       }
     };

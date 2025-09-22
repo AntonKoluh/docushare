@@ -128,7 +128,6 @@ class ChatConsumer(WebsocketConsumer):
             return
         if msg_type == "disconnect":
             latest_msg = get_latest_redis(self.doc_name) if get_latest_redis(self.doc_name) else {}
-            print (data["name"], data["content"])
             if not latest_msg.get("updated") or datetime.fromisoformat(latest_msg.get("updated")) < now:
                 latest_msg.update({
                     "name": data["name"],
