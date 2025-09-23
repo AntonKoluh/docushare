@@ -49,6 +49,6 @@ urlpatterns = [
     path('api/docs/download/<str:file_format>/<str:uid>', export_rtf_string_to_pdf),
 
     path('api/ai/test/', ai_sum),
-    path('api/ai/health/', ai_health)
+    path('api/ai/health/<str:uid>', ai_health)
 
 ]
