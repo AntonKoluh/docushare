@@ -61,6 +61,7 @@ const FileListRoute = () => {
     } else {
       toast("Something went wrong")
     }
+    setUpdateData((prev) => ({ ...prev, "title":updateDataRef.current.title, "content": updateDataRef.current.content, flag: true }));
     setIsSaving(false)
   }
 
@@ -135,6 +136,7 @@ const FileListRoute = () => {
             "You do not have access to this Doc"
           );
           navigate("/");
+          return
         }
         setDoc(result.data);
         setUpdateData(result.data);
@@ -143,7 +145,7 @@ const FileListRoute = () => {
       getContent();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, []);
   return (
     <div className="flex flex-col w-full h-full bg-gray-200 gap-2">
       {isLoading ? (

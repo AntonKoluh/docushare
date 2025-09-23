@@ -164,8 +164,10 @@ def get_doc(request, uid):
     """
 
     access = DocEntry.access_check(request.user, uid)
-    doc_entry = DocEntry(uid=uid, name="New Document", doc=uid, owner=request.user)
+    doc_entry = DocEntry.objects.filter(uid=uid).first()
     doc = MongoNote.objects.filter(doc_id=doc_entry.uid).first() # pylint: disable=no-member
+    if not doc_entry:
+        doc_entry = DocEntry(uid=uid, name="New Document", doc=uid, owner=request.user)
     if not doc:
         MongoNote.objects(doc_id=doc_entry.uid).update_one( # pylint: disable=no-member
         set__content="",

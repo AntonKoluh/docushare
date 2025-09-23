@@ -188,7 +188,7 @@ const EditorNavBar = ({
               <li className="bg-(--bg-acc-c) text-xl px-2 py-1 rounded-sm mr-auto text-(--text-c) font-bold hover:bg-(--bg-acc-c) hover:shadow-sm hover:shadow-amber-500 transition-all cursor-pointer">
                 <Link
                   to="/"
-                  onClick={closeSocket}
+                  onClick={handleManualSave}
                   className="flex flex-row justify-center items-center gap-2 text-sm!"
                 >
                   <MoveLeft />
