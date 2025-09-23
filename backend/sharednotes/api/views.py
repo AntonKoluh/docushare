@@ -1,6 +1,7 @@
 """
 Views for API functionality
 """
+import math
 import os
 import tempfile
 import pypandoc
@@ -233,10 +234,15 @@ def export_rtf_string_to_pdf(request, file_format, uid):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def ai_health(request):
+def ai_health(request, uid):
+    """
+    Checks if AI server is online and amount of tokens remaining
+    """
     ai_url = os.getenv('AI_API_URL_DEBUG') if os.getenv("VITE_DEBUG") == "True" else os.getenv('AI_API_URL')
     ai_health = is_server_online(ai_url)
-    return Response({"success": bool(ai_health)})
+    user = User.objects.filter(username=request.user).first()
+    mongo_doc = MongoNote.objects.filter(doc_id=uid).first()
+    return Response({"success": bool(ai_health), "tokens": user.profile.ai_tokens, "cache": mongo_doc.ai_sum if mongo_doc.ai_sum else ""})
 
 
 @api_view(['POST'])
@@ -252,6 +258,9 @@ def ai_sum(request):
     doc = DocEntry.objects.filter(uid=doc_uid).first()
     collab_check = Collaborators.objects.filter(doc_entry=doc,
                                                collaborator__username = user).first()
+    tokens_left = user_obj.profile.ai_tokens - math.ceil(len(mongo_doc.content) / 1000)
+    if tokens_left < 0:
+        return Response({"success": False, "msg": f"Not enough tokens. Tokens left: {tokens_left} Doc lenght: {len(mongo_doc.content)}"})
     if len(mongo_doc.content) < 10:
         return Response({"success": False, "msg": "Cannot sum such a short doc"})
     if not doc:
@@ -296,7 +305,9 @@ def ai_sum(request):
                     data = json.loads(chunk.decode('utf-8'))
                     if "response" in data:
                         fulldata += data["response"]
-                        yield json.dumps({"success": True, "msg": data["response"]}) + "\n"
+                        yield json.dumps({"success": True, "msg": data["response"], "tokens": tokens_left}) + "\n"
         mongo_doc.ai_sum = fulldata
+        user_obj.profile.ai_tokens = tokens_left
+        user_obj.save()
         mongo_doc.save()
     return StreamingHttpResponse(event_stream(), content_type="application/x-ndjson")

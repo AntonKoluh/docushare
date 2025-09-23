@@ -17,11 +17,16 @@ type incomingProps = {
 const AiHero = ({ uid }: incomingProps) => {
   const baseUrl = import.meta.env.VITE_DEBUG === "True" ? import.meta.env.VITE_BACKEND_URL_DEBUG : import.meta.env.VITE_BACKEND_URL;
   const [msg, setMsg] = useState("");
-  const [isGenerating, setIsGenerating] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [aiStatus, setAiStatus] = useState<"loading" | "on" | "off">("loading");
+  const [tokens, setTokens] = useState(-1);
   const access_token = localStorage.getItem("access");
   const getData = useGetData();
   const getStream = async (isUsingCache = true) => {
+    if (tokens === 0) {
+      toast("Not enough tokens")
+      return
+    }
     if (msg !== "") setMsg("");
     setIsGenerating(true);
     const response = await fetch(`${baseUrl}/api/ai/test/`, {
@@ -44,6 +49,7 @@ const AiHero = ({ uid }: incomingProps) => {
         if (line.trim()) {
           const obj = JSON.parse(line);
           if (obj.success === true) {
+            setTokens(obj.tokens)
             setMsg((prev) => prev + obj.msg);
           } else {
             toast(obj.msg);
@@ -55,16 +61,18 @@ const AiHero = ({ uid }: incomingProps) => {
   };
   useEffect(() => {
     const healthCheck = async () => {
-      const aiHealth = await getData("ai/health/");
+      const aiHealth = await getData("ai/health/" + uid);
       setAiStatus(aiHealth.data.success ? "on" : "off");
+      setTokens(aiHealth.data.tokens);
+      setMsg(aiHealth.data.cache === "" ? "No cached responsed" : aiHealth.data.cache);
     };
     healthCheck();
-    getStream();
   }, []);
   return (
     <div className="flex flex-col justify-center items-center gap-2">
       <span className="h-0.5 w-full bg-black"></span>
-      <div className="flex flex-row gap-1 justify-left items-center w-full">
+      <div className="flex flex-row gap-1 justify-between items-center w-full">
+        <div className="flex flex-row gap-1 justify-center items-center">
         <HoverCard>
           <HoverCardTrigger>
             <CircleQuestionMark className="w-5 h-5 hover:bg-gray-300 rounded-full" />
@@ -87,6 +95,20 @@ const AiHero = ({ uid }: incomingProps) => {
             : "bg-green-600"
         }`}
         ></span>
+        </div>
+        <div className="flex flex-row gap-1 justify-center items-center">
+          Tokens Remaining: {tokens === -1 ? <SpinnerDownload /> : tokens + " / 3"}
+                  <HoverCard>
+          <HoverCardTrigger>
+            <CircleQuestionMark className="w-5 h-5 hover:bg-gray-300 rounded-full" />
+          </HoverCardTrigger>
+          <HoverCardContent>
+            <span className="text-sm">
+              AI generations avalible for today, each token represents a max of 1000 characters
+            </span>
+          </HoverCardContent>
+        </HoverCard>
+          </div> 
       </div>
       <span className="h-0.5 w-full bg-black"></span>
       <h1 className="text-sm! my-2">{msg}</h1>
