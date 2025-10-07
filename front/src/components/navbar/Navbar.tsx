@@ -8,8 +8,8 @@ import SearchList from '../DocsList/components/search';
 
 type incomingProps = {
   user: userType | null;
-  searchTerm: string;
-  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  searchTerm: string | null;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>> | null;
 };
 
 const Navbar = ({ user, searchTerm, setSearchTerm }: incomingProps) => {
@@ -32,11 +32,13 @@ const Navbar = ({ user, searchTerm, setSearchTerm }: incomingProps) => {
             Docs
           </Link>
         </div>
+        {searchTerm && setSearchTerm && (
         <div>
           <span className="max-w-5xl z-50">
             <SearchList searchTerm={searchTerm} setSearch={setSearchTerm}/>
           </span>
         </div>
+        )}
         <div className="flex flex-row gap-4 justify-around items-center">
           <Link
             to="/about"
