@@ -188,11 +188,11 @@ const RegisterInner = ({ setState }: LoginInnerType) => {
           </Button>
           <Button
             type="submit"
-            className="cursor-pointer text-lg"
+            className="cursor-pointer text-lg bg-(--main-n) border-2 border-black hover:text-(--main-n) hover:bg-(--main-c)"
             disabled={isSubmitting}
           >
             {isSubmitting ? (
-              <span className="text-white flex flex-row justify-center items-center gap-2">
+              <span className="text-black flex flex-row justify-center items-center gap-2">
                 <SpinnerDownload /> <span>Loading...</span>
               </span>
             ) : (

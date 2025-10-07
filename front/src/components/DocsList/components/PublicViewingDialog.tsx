@@ -48,10 +48,16 @@ export default function PublicViewingDialog({
       );
       setData(newList);
     }
-    toast(result.data.msg);
+    let toastMsg = ""
+    if (result.data.access) {
+      toastMsg = "Doc is now viewable by anyone with a link"
+    } else {
+      toastMsg = "Doc is now only viewable by owner/collaborators"
+    }
+    toast(toastMsg);
   }
   return (
-    <div className="flex flex-col items-center justify-start w-full gap-10">
+    <div className="flex flex-col items-center justify-start w-full gap-4">
       <div className="w-full flex flex-row justify-center items-center gap-1">
         <input
           type="text"
@@ -59,7 +65,7 @@ export default function PublicViewingDialog({
           id=""
           defaultValue={baseUrl + "/edit/" + link}
           ref={urlRef}
-          className="text-black text-lg w-full"
+          className="text-black text-sm w-full border-1 border-(--main-n) rounded-md px-1 h-[30px]"
         />
         {isCopied ? (
           <CopyCheck
@@ -73,14 +79,14 @@ export default function PublicViewingDialog({
           />
         )}
       </div>
-      <div className="flex flex-row justify-center items-center gap-3">
-        <p className="text-black! text-lg!">Allow Public Viewing: </p>
+      <div className="flex flex-row justify-start items-center gap-3 w-full px-1">
+        <p className="text-black! text-sm!">Allow Public Viewing: </p>
         <input
           type="checkbox"
           defaultChecked={publicAccess}
           onClick={handleAccessChange}
           ref={allowAccessRef}
-          className="size-5"
+          className="size-5 accent-(--main-n)"
         />
       </div>
     </div>

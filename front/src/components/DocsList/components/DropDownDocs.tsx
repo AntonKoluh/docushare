@@ -1,4 +1,12 @@
-import { ArrowDownToLine, File, Share, Trash2 } from "lucide-react";
+import {
+  Bot,
+  Download,
+  File,
+  Link,
+  Menu,
+  Share,
+  Trash2,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,7 +37,7 @@ type incomingProps = {
   public_access: boolean;
   displayOwner: string;
   setData: React.Dispatch<React.SetStateAction<FileListType[] | null>>;
-  data: FileListType[] | null;
+  fullData: FileListType[] | null;
 };
 
 export default function DropDownDocs({
@@ -38,8 +46,8 @@ export default function DropDownDocs({
   name,
   public_access,
   displayOwner,
-  data,
   setData,
+  fullData,
 }: incomingProps) {
   let displayName = name;
   if (name.length > 14) {
@@ -78,7 +86,7 @@ export default function DropDownDocs({
           link={uid}
           publicAccess={public_access}
           setData={setData}
-          data={data}
+          data={fullData}
         />
       </ResponsiveDialog>
       {/* Delete Dialog */}
@@ -92,7 +100,7 @@ export default function DropDownDocs({
           setIsOpen={setDeleteOpen}
           id={id}
           setData={setData}
-          data={data}
+          data={fullData}
         />
       </ResponsiveDialog>
       {/* Download Docs */}
@@ -111,82 +119,91 @@ export default function DropDownDocs({
         isOpen={aiOpen}
         setIsOpen={setAiOpen}
       >
-        <AiHero uid={uid}/>
+        <AiHero uid={uid} />
       </ResponsiveDialog>
-      <DropdownMenu aria-hidden="false">
-        <DropdownMenuTrigger asChild>
-          <span className="flex flex-col w-10 h-10 justify-center items-center gap-1 hover:bg-(--acc-c) rounded-full">
-            <span className="rounded-full bg-(--bg-acc-c) w-1 h-1"></span>
-            <span className="rounded-full bg-(--bg-acc-c) w-1 h-1"></span>
-            <span className="rounded-full bg-(--bg-acc-c) w-1 h-1"></span>
-          </span>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <HoverCard>
-            <HoverCardTrigger>
-              <DropdownMenuLabel className="text-2xl w-full flex flex-row justify-start items-center gap-3">
-                <File className="h-4 w-4"/>
-                {displayName}
-              </DropdownMenuLabel>
-            </HoverCardTrigger>
-            {name.length > 7 && <HoverCardContent>{name}</HoverCardContent>}
-          </HoverCard>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="text-xl"
-            onSelect={() => {
-              setDownloadOpen(true);
-            }}
-          >
-            <ArrowDownToLine />
-            Download
-          </DropdownMenuItem>
-          <HoverCard>
-            <HoverCardTrigger>
-              <DropdownMenuItem
-                className="text-xl z-50"
-                onSelect={() => {
-                  setPublicOpen(true);
-                }}
-                disabled={disableShare}
-              >
-                <Share />
-                Public Access
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="text-xl z-50"
-                onSelect={() => {
-                  setShareOpen(true);
-                }}
-                disabled={disableShare}
-              >
-                <Share />
-                Manage Collaborators
-              </DropdownMenuItem>
-            </HoverCardTrigger>
-            {disableShare && (
-              <HoverCardContent>
-                Cannot share docs owned by others
-              </HoverCardContent>
-            )}
-          </HoverCard>
+      <div className="flex flex-row justify-end items-center w-fit gap-1 absolute top-19 left-29">
+        <Bot 
+        className="w-[26px] h-[26px] p-1 text-[#16881E] hover:text-white hover:bg-(--main-n) transition-all duration-150 rounded-full"
+        onClick={() => setAiOpen(true)}
+        />
+        <Download
+        className="w-[26px] h-[26px] p-1 text-[#16881E] hover:text-white hover:bg-(--main-n) transition-all duration-150 rounded-full z-10"
+        onClick={() => setDownloadOpen(true)}
+        />
+        <DropdownMenu aria-hidden="false">
+          <DropdownMenuTrigger asChild>
+            <Menu className="w-[26px] h-[26px] p-1 text-[#16881E] hover:text-white hover:bg-(--main-n) transition-all duration-150 rounded-full" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <HoverCard>
+              <HoverCardTrigger>
+                <DropdownMenuLabel className="text-2xl w-full flex flex-row justify-start items-center gap-3">
+                  <File className="h-4 w-4" />
+                  {displayName}
+                </DropdownMenuLabel>
+              </HoverCardTrigger>
+              {name.length > 7 && <HoverCardContent>{name}</HoverCardContent>}
+            </HoverCard>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="text-xl"
+              onSelect={() => {
+                setDownloadOpen(true);
+              }}
+            >
+              <Download />
+              Download
+            </DropdownMenuItem>
+            <HoverCard>
+              <HoverCardTrigger>
+                <DropdownMenuItem
+                  className="text-xl z-50"
+                  onSelect={() => {
+                    setPublicOpen(true);
+                  }}
+                  disabled={disableShare}
+                >
+                  <Link />
+                  Public Access
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="text-xl z-50"
+                  onSelect={() => {
+                    setShareOpen(true);
+                  }}
+                  disabled={disableShare}
+                >
+                  <Share />
+                  Manage Collaborators
+                </DropdownMenuItem>
+              </HoverCardTrigger>
+              {disableShare && (
+                <HoverCardContent>
+                  Cannot share docs owned by others
+                </HoverCardContent>
+              )}
+            </HoverCard>
 
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-xl text-purple-700" onSelect={() => setAiOpen(true)}>
-            <Share />
-            Summarize
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="text-xl"
-            variant="destructive"
-            onSelect={() => setDeleteOpen(true)}
-          >
-            <Trash2 />
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="text-xl text-purple-700"
+              onSelect={() => setAiOpen(true)}
+            >
+              <Bot />
+              Summarize
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="text-xl"
+              variant="destructive"
+              onSelect={() => setDeleteOpen(true)}
+            >
+              <Trash2 />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </>
   );
 }

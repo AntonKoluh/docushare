@@ -6,16 +6,10 @@ import { loginCheck } from "~/helpers/helpers";
 import SpinnerPageLoading from "~/components/ui/spinners/SpinnerPageLoading";
 import type { userType } from "@/types/accountType";
 
-export function meta() {
-  return [
-    { title: "Welcome" },
-    { name: "description", content: "Easy to share notes!" },
-  ];
-}
-
 const Home = () => {
   const [user, setUser] = useState<userType | null>(null);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     loginCheck({ setUser, setLoading });
@@ -24,9 +18,13 @@ const Home = () => {
   if (loading) return <SpinnerPageLoading />;
 
   return (
-    <div className="flex flex-col w-full h-full bg-(--bg-c)/80">
-      <Navbar user={user} />
-      {user ? <DocList /> : <Welcome />}
+    <div className="flex flex-col w-full h-full bg-(--bg-n)/80">
+      <Navbar
+        user={user}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+      />
+      {user ? <DocList searchTerm={searchTerm} /> : <Welcome />}
     </div>
   );
 };

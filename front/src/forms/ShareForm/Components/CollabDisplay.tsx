@@ -64,7 +64,7 @@ const CollabDisplay = ({
     <HoverCard key={id}>
       <HoverCardTrigger>
         <div
-          className={`p-2 text-sm rounded-full w-8 h-8 flex justify-center items-center cursor-pointer font-bold ${
+          className={`p-2 text-sm rounded-full w-10 h-10 flex justify-center items-center cursor-pointer font-bold ${
             auth === 1 ? "bg-green-400" : "bg-red-400"
           }`}
         >
@@ -72,8 +72,8 @@ const CollabDisplay = ({
         </div>
       </HoverCardTrigger>
       <HoverCardContent className="w-fit">
-        <div className="font-bold text-lg">Email: {email}</div>{" "}
-        <div className="font-bold mt-2 text-lg">
+        <div className="font-bold text-sm">Email: {email}</div>{" "}
+        <div className="font-bold mt-2 text-sm">
           {auth === 1 ? "Can" : "Cannot"} Edit{" "}
           <Switch
             defaultChecked={auth === 1 ? true : false}
@@ -82,7 +82,7 @@ const CollabDisplay = ({
         </div>
         <div>
           <button
-            className={`mt-5 border-2 p-2 border-white bg-red-400 rounded-md cursor-pointer hover:text-white hover:shadow-2xl hover:bg-red-500 hover:shadow-red-500 ${
+            className={`flex justify-center items-center w-16 h-8 text-sm mt-5 border-2 p-2 border-white bg-red-400 rounded-md cursor-pointer hover:text-white hover:shadow-2xl hover:bg-red-500 hover:shadow-red-500 ${
               isDelete
                 ? "bg-gray-400! hover:bg-gray-400! hover:shadow-none hover:text-black! cursor-wait!"
                 : ""

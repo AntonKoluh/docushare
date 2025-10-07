@@ -44,7 +44,7 @@ const LoginModal = ({ text }: incomingProps) => {
       </ResponsiveDialog>
       <Button
         onClick={() => setLoginOpen(true)}
-        className="text-lg py-3 hover:shadow-lg border-4 border-black shadow-amber-500 hover:bg-gray-800 cursor-pointer"
+        className="border-2 border-black bg-(--main-n) text-white text-2xl hover:bg-(--bg-n) hover:text-(--main-n) hover:shadow-2xs cursor-pointer font-(family-name:--font-main)"
       >
         {text}
       </Button>
@@ -128,7 +128,7 @@ const LoginInner = ({ setState }: LoginInnerType) => {
           Register
         </span>
         <Button
-          className="text-lg hover:shadow-sm border-2 border-black shadow-amber-500 hover:bg-(--acc-c) cursor-pointer"
+          className="text-lg bg-(--main-n) border-2 border-black hover:bg-(--main-c) cursor-pointer hover:text-(--main-n)"
           onClick={handleLogin}
         >
           Login

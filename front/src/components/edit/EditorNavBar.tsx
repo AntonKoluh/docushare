@@ -110,7 +110,7 @@ const EditorNavBar = ({
       >
         <DownloadDialog uid={doc.uid!} name={doc.title} />
       </ResponsiveDialog>
-      <div className="h-fit sticky w-full bg-(--text-c) flex flex-col justify-center items-center text-black max-w-7xl mx-auto p-2 rounded-md mt-1">
+      <div className="h-fit sticky w-full bg-(--bg-navbar) flex flex-col justify-center items-center text-black max-w-7xl mx-auto p-2 rounded-md mt-1">
         <div className="mx-auto max-w-7xl w-full">
           <div className="w-full text-left text-2xl font-bold px-1 my-1 flex flex-row justify-between items-center gap-4 mt-2">
             <HoverCard>
@@ -170,7 +170,7 @@ const EditorNavBar = ({
             </div>
           </div>
           <div className="flex justify-center items-center w-full border-t-2 border-t-gray-500">
-            <ul className="list-none flex flex-row-reverse justify-start items-center w-full gap-2 bg-(--text-c)">
+            <ul className="list-none flex flex-row-reverse justify-start items-center w-full gap-2 bg-(--bg-navbar)">
               <li className="text-xl px-2 py-1  cursor-pointer">
                 <DropDownFile
                   setDownloadOpen={setDownloadOpen}
@@ -185,11 +185,11 @@ const EditorNavBar = ({
               <li className="text-xl px-2 py-1  cursor-pointer font-bold">
                 <DropDownAI doc_name={doc.title!} uid={doc.uid!}/>
               </li>
-              <li className="bg-(--bg-acc-c) text-xl px-2 py-1 rounded-sm mr-auto text-(--text-c) font-bold hover:bg-(--bg-acc-c) hover:shadow-sm hover:shadow-amber-500 transition-all cursor-pointer">
+              <li className="bg-white text-xl px-2 py-1 rounded-sm mr-auto hover:text-white font-bold hover:bg-(--main-n)  transition-all cursor-pointer border-2 border-red-300 my-1">
                 <Link
                   to="/"
                   onClick={handleManualSave}
-                  className="flex flex-row justify-center items-center gap-2 text-sm!"
+                  className="flex flex-row justify-center items-center gap-2 text-sm! "
                 >
                   <MoveLeft />
                   Back
