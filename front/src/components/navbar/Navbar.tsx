@@ -1,4 +1,4 @@
-import { BookOpenText } from "lucide-react";
+import mainLogo from '../../../public/main-logo.svg'
 import { Link } from "react-router";
 import type { userType } from "~/types/accountType";
 import DropDownAccount from "./components/DropDownAccount";
@@ -14,29 +14,27 @@ const Navbar = ({ user }: incomingProps) => {
     : null;
 
   return (
-    <div className="bg-(--bg-acc-c)/70  w-full shadow-2xl">
-      <nav className="flex flex-row justify-between items-center h-18 w-full max-w-7xl mx-auto">
+    <>
+    <div className="bg-(--bg-navbar)/70  w-full">
+      <nav className="flex flex-row justify-between items-center h-15 w-full max-w-7xl mx-auto">
         <div>
           <Link
             to="/"
-            className="flex flex-row justify-start items-center gap-2 w-full h-full text-(--text-c) text-4xl font-bold"
+            className="flex flex-row justify-start items-center gap-2 w-full h-full text-(--text-c) text-[32px] font-semibold font-(family-name:--font-main)"
           >
-            <BookOpenText className="size-10 h-full text-(--acc-c)" />
+            <img src={mainLogo} className="w-[34px] h-[39px] text-(--acc-c)" />
             Docs
           </Link>
         </div>
         <div>
-          {/* <p className="text-2xl text-red-600" onClick={handleCheckLogin}>
-            Test
-          </p> */}
         </div>
         <div className="flex flex-row gap-10 justify-around items-center">
           <Link
             to="/about"
             className="
-              text-xl font-bold! text-gray-300! cursor-pointer relative before:content-[''] before:absolute 
+              text-xl font-bold! text-(--text-c)! cursor-pointer relative before:content-[''] before:absolute 
               before:left-0 before:-bottom-1 before:w-0 before:h-[3px] before:bg-yellow-400 before:transition-all
-              before:duration-300 hover:before:w-full
+              before:duration-300 hover:before:w-full font-(family-name:--font-main)
               "
           >
             About
@@ -49,6 +47,7 @@ const Navbar = ({ user }: incomingProps) => {
         </div>
       </nav>
     </div>
+    </>
   );
 };
 

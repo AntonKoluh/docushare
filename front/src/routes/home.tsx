@@ -24,7 +24,7 @@ const Home = () => {
   if (loading) return <SpinnerPageLoading />;
 
   return (
-    <div className="flex flex-col w-full h-full bg-(--bg-c)/80">
+    <div className="flex flex-col w-full h-full bg-(--bg-n)/80">
       <Navbar user={user} />
       {user ? <DocList /> : <Welcome />}
     </div>
