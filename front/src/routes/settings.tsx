@@ -29,7 +29,7 @@ const Settings = () => {
 
   return (
     <div className="flex flex-col w-full h-full bg-(--bg-c)/80">
-      <Navbar user={user} />
+      <Navbar user={user} searchTerm={null} setSearchTerm={null}/>
       {user ? <ProfileSettings /> : <Welcome />}
     </div>
   );

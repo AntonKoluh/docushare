@@ -21,7 +21,7 @@ const About = () => {
     );
   return (
     <div className="flex flex-col w-full h-full bg-white">
-      <Navbar user={user} />
+      <Navbar user={user} searchTerm={null} setSearchTerm={null}/>
       <div className="w-full flex flex-col justify-center items-center mt-5 gap-5">
         <h2 className="font-bold! flex flex-row gap-3 justify-center items-center">
           Created By: Anton Koluh
