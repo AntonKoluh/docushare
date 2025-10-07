@@ -67,7 +67,7 @@ const ShareForm = ({ id, setShareOpen }: incomingProps) => {
         {...register("email")}
         type="text"
         placeholder="Add new collaborator by email"
-        className="text-sm! w-full bg-gray-200! p-1 rounded-sm text-(--bg-acc-c) border-2 border-(--bg-acc-c)"
+        className="text-sm! w-full bg-(--bg-navbar) p-1 rounded-sm text-(--bg-acc-c) border-2 border-(--acc-c) focus:outline-0"
       />
       {errors.email && (
         <div className="text-red-500">{errors.email.message}</div>
@@ -84,9 +84,9 @@ const ShareForm = ({ id, setShareOpen }: incomingProps) => {
           />
         </div>
       )}
-      <div className="bg-gray-200 border-2 border-gray-400 w-full px-4 py-2 rounded-sm">
+      <div className="w-full py-2 rounded-sm">
         <p className="text-black! mb-2 text-sm!">Current collaborators:</p>
-        <div className="flex flex-row w-full justify-start items-center gap-2">
+        <div className="flex flex-col w-fit justify-start items-left gap-2 overflow-y-auto">
           {isLoading ? (
             <SpinnerCollaborators />
           ) : collaborators.length > 0 ? (
@@ -103,7 +103,7 @@ const ShareForm = ({ id, setShareOpen }: incomingProps) => {
               />
             ))
           ) : (
-            "No collaborators on this doc"
+            <span className="text-sm!">No collaborators on this doc</span>
           )}
         </div>
       </div>

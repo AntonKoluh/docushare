@@ -50,7 +50,7 @@ class DocEntry(models.Model):
             return {"success": False, "msg": "You are not the owner of this doc"}
         doc_entry.public_access = data['allowPublicAccess']
         doc_entry.save()
-        return {"success": True, "msg": "Public Access Changed"}
+        return {"success": True, "msg": f"Public Access Changed", "access": data['allowPublicAccess']}
 
 
     @staticmethod

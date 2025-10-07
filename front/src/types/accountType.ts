@@ -17,7 +17,7 @@ export type FileListType = {
   id: number;
   uid: string;
   name: string;
-  short_name: string | null;
+  shortName: string | null;
   owner: DBUserType;
   doc: number;
   public_access: boolean;

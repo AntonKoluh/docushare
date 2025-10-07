@@ -3,20 +3,26 @@ import { Link } from "react-router";
 import type { userType } from "~/types/accountType";
 import DropDownAccount from "./components/DropDownAccount";
 import LoginModal from "../loginModal/LoginModal";
+import SearchList from '../DocsList/components/search';
+
 
 type incomingProps = {
   user: userType | null;
+  searchTerm: string;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const Navbar = ({ user }: incomingProps) => {
+const Navbar = ({ user, searchTerm, setSearchTerm }: incomingProps) => {
   const displayName = user
     ? user.first_name.slice(0, 1) + user.last_name.slice(0, 1)
     : null;
+  
+  
 
   return (
     <>
-    <div className="bg-(--bg-navbar)/70  w-full">
-      <nav className="flex flex-row justify-between items-center h-15 w-full max-w-7xl mx-auto">
+    <div className="bg-(--bg-navbar)/70  w-full flex">
+      <nav className="flex flex-row justify-between items-center h-15 w-full max-w-7xl mx-auto px-2">
         <div>
           <Link
             to="/"
@@ -27,14 +33,17 @@ const Navbar = ({ user }: incomingProps) => {
           </Link>
         </div>
         <div>
+          <span className="max-w-5xl z-50">
+            <SearchList searchTerm={searchTerm} setSearch={setSearchTerm}/>
+          </span>
         </div>
-        <div className="flex flex-row gap-10 justify-around items-center">
+        <div className="flex flex-row gap-4 justify-around items-center">
           <Link
             to="/about"
             className="
               text-xl font-bold! text-(--text-c)! cursor-pointer relative before:content-[''] before:absolute 
               before:left-0 before:-bottom-1 before:w-0 before:h-[3px] before:bg-yellow-400 before:transition-all
-              before:duration-300 hover:before:w-full font-(family-name:--font-main)
+              before:duration-300 hover:before:w-full font-(family-name:--font-main) z-0
               "
           >
             About

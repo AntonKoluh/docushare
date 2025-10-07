@@ -17,7 +17,7 @@ ReactDOM.createRoot(root!).render(
           unstyled: true,
           classNames: {
             toast:
-              "bg-gray-400 text-black text-xl px-4 py-3 rounded-md shadow-lg",
+              "bg-gray-400 text-black text-sm px-4 py-3 rounded-md shadow-lg",
             description: "text-gray-300 text-xs",
             actionButton: "bg-white text-black",
           },
