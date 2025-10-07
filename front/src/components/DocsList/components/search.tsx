@@ -1,11 +1,9 @@
-import { useMediaQuery } from "@/hooks/useGetScreenWidth";
 import { Search } from "lucide-react";
 
 export default function SearchList({searchTerm ,setSearch} : {searchTerm: string, setSearch: React.Dispatch<React.SetStateAction<string>>}) {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   }
-  const isSmallScreen = useMediaQuery("(max-width: 600px)");
   return (
     <div className="relative flex flex-row justify-center items-center rounded-md ml-6 z-50 bg-(#f5f5f5)">
     <div className="absolute sm:relative flex flex-row justify-start items-center max-w-5xl w-fit h-8 bg-(#f5f5f5) rounded-md text-md sm:bg-(--bg-navbar) sm:border-2 border-0 border-(--main-n) z-50">
