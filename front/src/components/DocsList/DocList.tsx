@@ -11,7 +11,7 @@ import plusNewFile from "../../../public/plusNewFile.svg";
 
 type incomingProps = {
   searchTerm: string;
-}
+};
 
 const DocList = ({ searchTerm }: incomingProps) => {
   const getData = useGetData();
@@ -54,12 +54,14 @@ const DocList = ({ searchTerm }: incomingProps) => {
           </Link>
         </div>
       </div>
-      <div className="grid grid-cols-[repeat(auto-fill,_210px)] w-full gap-5 justify-center items-center mt-5 md:justify-start">
-        {isLoading ? (
+      {isLoading ? (
+        <div className="w-full gap-5 justify-center items-center mt-5 md:justify-start">
           <SpinnerDocList />
-        ) : data?.length === 0 ? null : data ? (
+        </div>
+      ) : (
+        <div className="grid grid-cols-[repeat(auto-fill,_210px)] w-full gap-5 justify-center items-center mt-5 md:justify-start">
           <>
-            {data.map((obj) => {
+            {data?.map((obj) => {
               const displayOwner =
                 obj.owner.username === currentUser
                   ? "Me"
@@ -76,17 +78,16 @@ const DocList = ({ searchTerm }: incomingProps) => {
                 />
               );
             })}
-            
-          </>
-        ) : null}
-        <Link
+            <Link
               to={"/edit/" + newUID}
               className="border-1 border-black w-[210px] h-[107px] font-(font-family:--font-main) p-2 flex flex-col justify-center items-center gap-1 hover:bg-(--bg-navbar) text-(--main-n)"
             >
               <img src={plusNewFile} />
               <span className="font-semibold">New Doc</span>
             </Link>
-      </div>
+          </>
+        </div>
+      )}
     </div>
   );
 };
