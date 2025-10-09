@@ -20,9 +20,10 @@ export default function SearchList({
           type="text"
           name="docListSearch"
           id="docListSearch"
-          className="sm:w-80 sm:focus:w-80 sm:h-fit sm:focus:border-0 sm:p-0 p-1 w-8 h-fit focus:w-70 focus:outline-none pl-3 transform-width duration-150 z-50 bg-(#f5f5f5) focus:bg-(--bg-navbar) focus:border-2 focus:border-(--main-n) rounded-md sm:bg-(--bg-navbar) opacity-0 focus:opacity-100 sm:opacity-100"
+          className="sm:w-80 sm:focus:w-80 sm:h-fit sm:focus:border-0 sm:p-0 sm:px-3 w-8 h-fit focus:w-70 focus:outline-none pl-2 transform-width duration-150 z-50 bg-(#f5f5f5) focus:bg-(--bg-navbar) focus:border-2 focus:border-(--main-n) rounded-md sm:bg-(--bg-navbar) opacity-0 focus:opacity-100 sm:opacity-100"
           onChange={handleSearchChange}
           value={searchTerm}
+          placeholder="Search"
         />
         <span
           className="hidden sm:flex cursor-pointer text-center hover:bg-(--main-n) hover:rounded-l-none rounded-md items-center px-3 text-sm h-8"
