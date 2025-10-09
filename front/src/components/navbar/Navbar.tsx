@@ -32,7 +32,7 @@ const Navbar = ({ user, searchTerm, setSearchTerm }: incomingProps) => {
             Docs
           </Link>
         </div>
-        {searchTerm && setSearchTerm && (
+        {user && (
         <div>
           <span className="max-w-5xl z-50">
             <SearchList searchTerm={searchTerm} setSearch={setSearchTerm}/>
