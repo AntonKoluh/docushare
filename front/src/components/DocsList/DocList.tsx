@@ -5,7 +5,6 @@ import useGetData from "~/hooks/useGetData";
 import type { FileListType } from "~/types/accountType";
 import SpinnerDocList from "../ui/spinners/SpinnerDocList";
 import { generateUID } from "~/helpers/helpers";
-import { Plus } from "lucide-react";
 // import { useMediaQuery } from "@/hooks/useGetScreenWidth";
 import DocCard from "./components/DocCard";
 import plusNewFile from "../../../public/plusNewFile.svg";
@@ -58,18 +57,7 @@ const DocList = ({ searchTerm }: incomingProps) => {
       <div className="grid grid-cols-[repeat(auto-fill,_210px)] w-full gap-5 justify-center items-center mt-5 md:justify-start">
         {isLoading ? (
           <SpinnerDocList />
-        ) : data?.length === 0 ? (
-          <div className="text-2xl flex justify-center items-center mt-4">
-            No documents to display,
-            <Link
-              to={"/edit/" + newUID}
-              className="font-bold hover:text-blue-700 flex flex-row justify-start items-center ml-2"
-            >
-              <Plus />
-              create one
-            </Link>
-          </div>
-        ) : data ? (
+        ) : data?.length === 0 ? null : data ? (
           <>
             {data.map((obj) => {
               const displayOwner =
@@ -88,15 +76,16 @@ const DocList = ({ searchTerm }: incomingProps) => {
                 />
               );
             })}
-            <Link
+            
+          </>
+        ) : null}
+        <Link
               to={"/edit/" + newUID}
               className="border-1 border-black w-[210px] h-[107px] font-(font-family:--font-main) p-2 flex flex-col justify-center items-center gap-1 hover:bg-(--bg-navbar) text-(--main-n)"
             >
               <img src={plusNewFile} />
               <span className="font-semibold">New Doc</span>
             </Link>
-          </>
-        ) : null}
       </div>
     </div>
   );
