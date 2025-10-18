@@ -1,4 +1,4 @@
-import fileIcon from "../../../../public/file-icon.svg";
+import fileIcon from "../../../assets/file-icon.svg";
 import type { FileListType } from "@/types/accountType";
 import {
   HoverCard,
@@ -45,7 +45,7 @@ const DocCard = ({ owner, fullContent, setData, data }: incomingProps) => {
   return (
     <div className="relative w-full">
     <Link to={`/edit/${fullContent.uid}`}>
-    <div className="border-1 border-black w-[210px] h-[107px] font-(font-family:--font-main) p-2 flex-col justify-center items-center gap-1 hover:bg-(--bg-navbar)">
+    <div className="shadow-xl shadow-gray-300 border-1 border-black w-[210px] h-[107px] font-(font-family:--font-main) p-2 flex-col justify-center items-center gap-1 hover:bg-(--bg-navbar) hover:shadow-blue-200 transition-all duration-150">
       <div className="flex flex-col relative gap-1 justify-center items-left w-full text-left mb-1">
         <HoverCard>
           <HoverCardTrigger asChild>

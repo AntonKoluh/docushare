@@ -7,7 +7,7 @@ import SpinnerDocList from "../ui/spinners/SpinnerDocList";
 import { generateUID } from "~/helpers/helpers";
 // import { useMediaQuery } from "@/hooks/useGetScreenWidth";
 import DocCard from "./components/DocCard";
-import plusNewFile from "../../../public/plusNewFile.svg";
+import plusNewFile from "../../assets/plusNewFile.svg";
 
 type incomingProps = {
   searchTerm: string;
@@ -80,7 +80,7 @@ const DocList = ({ searchTerm }: incomingProps) => {
             })}
             <Link
               to={"/edit/" + newUID}
-              className="border-1 border-black w-[210px] h-[107px] font-(font-family:--font-main) p-2 flex flex-col justify-center items-center gap-1 hover:bg-(--bg-navbar) text-(--main-n)"
+              className="shadow-xl shadow-gray-300 hover:shadow-blue-200 transition-all duration-150 border-1 border-black w-[210px] h-[107px] font-(font-family:--font-main) p-2 flex flex-col justify-center items-center gap-1 hover:bg-(--bg-navbar) text-(--main-n)"
             >
               <img src={plusNewFile} />
               <span className="font-semibold">New Doc</span>
