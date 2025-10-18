@@ -2,7 +2,7 @@ import Navbar from "@/components/navbar/Navbar";
 import { loginCheck } from "@/helpers/helpers";
 import type { userType } from "@/types/accountType";
 import { useEffect, useState } from "react";
-import githubLogo from "../../public/github.svg";
+import githubLogo from "../assets/github.svg";
 import { Link } from "react-router";
 
 const About = () => {

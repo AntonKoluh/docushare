@@ -1,4 +1,4 @@
-import googleLogo from '../../public/google-icon.svg'
+import googleLogo from '../assets/google-icon.svg'
 
 type incomingProps = {
   text: string;

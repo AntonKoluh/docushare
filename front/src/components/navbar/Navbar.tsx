@@ -1,4 +1,4 @@
-import mainLogo from '../../../public/main-logo.svg'
+import mainLogo from '../../assets/main-logo.svg'
 import { Link } from "react-router";
 import type { userType } from "~/types/accountType";
 import DropDownAccount from "./components/DropDownAccount";
